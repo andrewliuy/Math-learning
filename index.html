@@ -4,9 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>My Math Journey</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
@@ -23,26 +26,56 @@
   </header>
 
   <main>
+
     <div class="math-card">
+
       <h2>📚 Learn Mathematics</h2>
 
       <p>
         Build your math skills with challenging problems,
         creative solutions, and powerful mathematical ideas.
       </p>
-      <p>Let start simply what is 1+1</p>
-      <a href=""></a>
+
+      <div class="question-box">
+
+        <p class="question-number">QUESTION 1</p>
+
+        <h2>What is 1 + 1?</h2>
+
+        <p>Come on, you got this! 💪</p>
+
+        <div class="answers">
+          <button id="correctButton">2</button>
+          <button id="wrongButton">1</button>
+        </div>
+
+        <h2 id="result" aria-live="polite"></h2>
+
+      </div>
+
     </div>
-    <p> Come on you got this</p>
+
+    <div class="scroll-section">
+      <h2>🌟 Keep Going!</h2>
+      <p>Every math genius starts with the basics.</p>
+      <p>Scroll down for a surprise!</p>
     </div>
-    <button id="confettiButton">2</button>
-    <button id="wrong">1</button>
-    <h2>Great job</h2>
+
+    <div class="surprise-section">
+      <h2>🎉 You're Amazing!</h2>
+      <p>
+        Mathematics is an adventure.
+        Keep practicing and never give up!
+      </p>
+    </div>
+
   </main>
 
   <footer>
     © 2026 My Math Journey | Keep Learning ✨
   </footer>
+
+  <script src="script.js"></script>
 
 </body>
 </html>
