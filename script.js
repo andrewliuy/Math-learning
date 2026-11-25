@@ -1,40 +1,65 @@
 
-const button = document.getElementById("confettiButton");
+const correctButton =
+  document.getElementById("correctButton");
 
-button.addEventListener("click", function () {
-  for (let i = 0; i < 150; i++) {
-    createConfetti();
+const wrongButton =
+  document.getElementById("wrongButton");
+
+const result =
+  document.getElementById("result");
+
+// CORRECT ANSWER
+
+correctButton.addEventListener("click", function () {
+
+  result.textContent = "🎉 Great job! 1 + 1 = 2!";
+  result.style.color = "#4ade80";
+
+  correctButton.style.background = "#16a34a";
+
+  // Confetti explosion
+  if (typeof confetti === "function") {
+
+    confetti({
+      particleCount: 200,
+      spread: 120,
+      startVelocity: 45,
+      origin: { y: 0.6 }
+    });
+
+    // Second explosion
+    setTimeout(function () {
+      confetti({
+        particleCount: 120,
+        spread: 160,
+        origin: { x: 0.3, y: 0.5 }
+      });
+    }, 300);
+
+    // Third explosion
+    setTimeout(function () {
+      confetti({
+        particleCount: 120,
+        spread: 160,
+        origin: { x: 0.7, y: 0.5 }
+      });
+    }, 600);
+
   }
+
 });
 
-function createConfetti() {
-  const confetti = document.createElement("div");
-  confetti.classList.add("confetti");
+// WRONG ANSWER
 
-  const colors = [
-    "#ff0000",
-    "#ffff00",
-    "#00ff00",
-    "#00ffff",
-    "#ff00ff",
-    "#ff8800"
-  ];
+wrongButton.addEventListener("click", function () {
 
-  confetti.style.backgroundColor =
-    colors[Math.floor(Math.random() * colors.length)];
+  result.textContent = "❌ Not quite! Try again!";
+  result.style.color = "#f87171";
 
-  confetti.style.left = Math.random() * 100 + "vw";
+  wrongButton.style.background = "#dc2626";
 
-  confetti.style.animationDuration =
-    (Math.random() * 3 + 2) + "s";
+  setTimeout(function () {
+    wrongButton.style.background = "";
+  }, 1000);
 
-  confetti.style.animationDelay =
-    Math.random() * 0.8 + "s";
-
-  document.body.appendChild(confetti);
-
-  confetti.addEventListener("animationend", function () {
-    confetti.remove();
-  });
-}
-
+});
