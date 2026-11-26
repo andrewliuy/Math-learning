@@ -5,13 +5,13 @@ const questions = [
   {
     question: "What is 1 + 1?",
     answers: ["2", "1"],
-    correct: "2"
+    correct: "2",
   },
 
   {
     question: "What is 5 + 3?",
     answers: ["7", "8"],
-    correct: "8"
+    correct: "8",
   },
 
   {
@@ -22,12 +22,14 @@ const questions = [
   {
   question: "What is 6 × 56?",
   answers: ["336", "346"],
-  correct: "336"
+  correct: "336",
+  explanation: "6x50=300 6x6=36 300+36=336"
   },
   {
   question: "I have 4 pants, 3 underwhere and 2 shirts how many ways can I dress up",
   answers: ["24", "9"],
-  correct: "24"
+  correct: "24",
+  explanation: "The answer is 4x3x2 not 4+3+2"
   }
 ];
 
@@ -60,10 +62,12 @@ function showQuestion() {
   nextButton.hidden = true;
 }
 
+
 function checkAnswer(answer) {
   const q = questions[currentQuestion];
 
   if (answer === q.correct) {
+
     result.textContent = "🎉 Great job!";
     result.style.color = "#4ade80";
 
@@ -85,8 +89,12 @@ function checkAnswer(answer) {
     nextButton.hidden = false;
 
   } else {
-    result.textContent = "❌ Try again!";
-    result.style.color = "#f87171";
+
+    result.textContent =
+      "❌ Not quite! Try again!\n\n" +
+      "💡 Explanation: " + q.explanation;
+
+    result.style.color = "#fbbf24";
   }
 }
 
