@@ -18,6 +18,16 @@ const questions = [
     question: "What is 6 × 4?",
     answers: ["24", "20"],
     correct: "24"
+  },
+  {
+  question: "What is 6 × 56?",
+  answers: ["336", "346"],
+  correct: "336"
+  },
+  {
+  question: "I have 4 pants, 3 underwhere and 2 shirts how many ways can I dress up",
+  answers: ["24", "9"],
+  correct: "24"
   }
 ];
 
