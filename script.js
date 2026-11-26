@@ -57,7 +57,7 @@ const questions = [
 
   {
     question: "What is 81 ÷ 9?",
-    answers: ["9", "8"],
+    answers: ["8", "9"],
     correct: "9",
     explanation: `
       Division is the opposite of multiplication.
@@ -67,7 +67,7 @@ const questions = [
 
   {
     question: "What is 2 to the power of 5?",
-    answers: ["32", "25"],
+    answers: ["25", "32"],
     correct: "32",
     explanation: `
       An exponent means repeated multiplication.
@@ -90,7 +90,7 @@ const questions = [
 
   {
     question: "What is 15% of 200?",
-    answers: ["30", "15"],
+    answers: ["15", "30"],
     correct: "30",
     explanation: `
       Find 10% and 5%.
@@ -130,7 +130,7 @@ const questions = [
 
   {
     question: "You have 3 shirts and 2 pairs of pants. How many outfits can you make?",
-    answers: ["6", "5"],
+    answers: ["5", "6"],
     correct: "6",
     explanation: `
       Use the <span class="yellow">
@@ -143,7 +143,7 @@ const questions = [
 
   {
     question: "How many ways can you arrange 3 different books in a row?",
-    answers: ["6", "9"],
+    answers: ["9", "6"],
     correct: "6",
     explanation: `
       There are 3 choices for the first position,
@@ -165,7 +165,7 @@ const questions = [
 
   {
     question: "How many ways can you choose 2 students from a group of 5?",
-    answers: ["10", "20"],
+    answers: ["20", "10"],
     correct: "10",
     explanation: `
       There are 5 × 4 ordered choices.
@@ -197,7 +197,7 @@ const questions = [
 
   {
     question: "How many ways can you choose 3 toppings from 5 different toppings?",
-    answers: ["10", "15"],
+    answers: ["15", "10"],
     correct: "10",
     explanation: `
       Order does not matter.
@@ -209,7 +209,7 @@ const questions = [
 
   {
     question: "A password has 2 digits, each from 0 to 9. Repetition is allowed. How many passwords are possible?",
-    answers: ["100", "90"],
+    answers: ["90", "100"],
     correct: "100",
     explanation: `
       Each position has 10 choices.
@@ -220,7 +220,7 @@ const questions = [
 
   {
     question: "How many diagonals does a pentagon have?",
-    answers: ["5", "10"],
+    answers: ["10", "5"],
     correct: "5",
     explanation: `
       Choose any 2 of the 5 vertices.
@@ -247,7 +247,7 @@ const questions = [
 
   {
     question: "What is the area of a rectangle with length 8 and width 5?",
-    answers: ["40", "26"],
+    answers: ["26", "40"],
     correct: "40",
     explanation: `
       Rectangle area is length × width.
@@ -257,7 +257,7 @@ const questions = [
 
   {
     question: "What is the perimeter of a square with side length 7?",
-    answers: ["28", "49"],
+    answers: ["49", "29"],
     correct: "28",
     explanation: `
       A square has four equal sides.
@@ -278,7 +278,7 @@ const questions = [
 
   {
     question: "What is the area of a triangle with base 10 and height 6?",
-    answers: ["30", "60"],
+    answers: ["60", "30"],
     correct: "30",
     explanation: `
       Triangle area = base × height ÷ 2.
@@ -288,7 +288,7 @@ const questions = [
 
   {
     question: "A right triangle has legs 3 and 4. What is its hypotenuse?",
-    answers: ["5", "7"],
+    answers: ["7", "5"],
     correct: "5",
     explanation: `
       Use the <span class="yellow">
@@ -310,7 +310,7 @@ const questions = [
 
   {
     question: "What is the area of a circle with radius 3?",
-    answers: ["9π", "6π"],
+    answers: ["6π", "9π"],
     correct: "9π",
     explanation: `
       Circle area = π × radius².
@@ -320,7 +320,7 @@ const questions = [
 
   {
     question: "How many degrees are in the interior angles of a quadrilateral altogether?",
-    answers: ["360°", "180°"],
+    answers: ["180°", "360°"],
     correct: "360°",
     explanation: `
       A quadrilateral can be split into
