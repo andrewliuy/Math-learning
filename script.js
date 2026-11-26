@@ -1,65 +1,101 @@
 
-const correctButton =
-  document.getElementById("correctButton");
+// ADD YOUR QUESTIONS HERE!
 
-const wrongButton =
-  document.getElementById("wrongButton");
+const questions = [
+  {
+    question: "What is 1 + 1?",
+    answers: ["2", "1"],
+    correct: "2"
+  },
 
-const result =
-  document.getElementById("result");
+  {
+    question: "What is 5 + 3?",
+    answers: ["7", "8"],
+    correct: "8"
+  },
 
-// CORRECT ANSWER
+  {
+    question: "What is 6 × 4?",
+    answers: ["24", "20"],
+    correct: "24"
+  }
+];
 
-correctButton.addEventListener("click", function () {
+// WEBSITE CODE BELOW
+// You usually don't need to change this part.
 
-  result.textContent = "🎉 Great job! 1 + 1 = 2!";
-  result.style.color = "#4ade80";
+let currentQuestion = 0;
 
-  correctButton.style.background = "#16a34a";
+const questionText = document.getElementById("questionText");
+const questionNumber = document.getElementById("questionNumber");
+const answer1 = document.getElementById("answer1");
+const answer2 = document.getElementById("answer2");
+const result = document.getElementById("result");
+const nextButton = document.getElementById("nextButton");
 
-  // Confetti explosion
-  if (typeof confetti === "function") {
+function showQuestion() {
+  const q = questions[currentQuestion];
 
-    confetti({
-      particleCount: 200,
-      spread: 120,
-      startVelocity: 45,
-      origin: { y: 0.6 }
-    });
+  questionText.textContent = q.question;
+  questionNumber.textContent =
+    "QUESTION " + (currentQuestion + 1);
 
-    // Second explosion
-    setTimeout(function () {
+  answer1.textContent = q.answers[0];
+  answer2.textContent = q.answers[1];
+
+  answer1.disabled = false;
+  answer2.disabled = false;
+
+  result.textContent = "";
+  nextButton.hidden = true;
+}
+
+function checkAnswer(answer) {
+  const q = questions[currentQuestion];
+
+  if (answer === q.correct) {
+    result.textContent = "🎉 Great job!";
+    result.style.color = "#4ade80";
+
+    answer1.disabled = true;
+    answer2.disabled = true;
+
+    if (typeof confetti === "function") {
       confetti({
-        particleCount: 120,
-        spread: 160,
-        origin: { x: 0.3, y: 0.5 }
+        particleCount: 150,
+        spread: 100
       });
-    }, 300);
+    }
 
-    // Third explosion
-    setTimeout(function () {
-      confetti({
-        particleCount: 120,
-        spread: 160,
-        origin: { x: 0.7, y: 0.5 }
-      });
-    }, 600);
+    nextButton.textContent =
+      currentQuestion === questions.length - 1
+        ? "Start Again ↻"
+        : "Next Question →";
 
+    nextButton.hidden = false;
+
+  } else {
+    result.textContent = "❌ Try again!";
+    result.style.color = "#f87171";
+  }
+}
+
+answer1.addEventListener("click", function () {
+  checkAnswer(answer1.textContent);
+});
+
+answer2.addEventListener("click", function () {
+  checkAnswer(answer2.textContent);
+});
+
+nextButton.addEventListener("click", function () {
+  currentQuestion++;
+
+  if (currentQuestion >= questions.length) {
+    currentQuestion = 0;
   }
 
+  showQuestion();
 });
 
-// WRONG ANSWER
-
-wrongButton.addEventListener("click", function () {
-
-  result.textContent = "❌ Not quite! Try again!";
-  result.style.color = "#f87171";
-
-  wrongButton.style.background = "#dc2626";
-
-  setTimeout(function () {
-    wrongButton.style.background = "";
-  }, 1000);
-
-});
+showQuestion();
