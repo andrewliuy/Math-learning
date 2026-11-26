@@ -296,3 +296,75 @@ footer {
   cursor: not-allowed;
 }
 
+/* COLORFUL EXPLANATIONS */
+
+.explanation-box {
+  margin-top: 25px;
+  padding: 25px;
+  border-radius: 20px;
+
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid #a855f7;
+
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+
+  animation: popIn 0.4s ease;
+}
+
+.explanation-box h3 {
+  color: #facc15;
+  font-size: 26px;
+}
+
+.wrong-message {
+  color: #fb7185 !important;
+  font-weight: bold;
+}
+
+.explanation-content {
+  color: white;
+  font-size: 21px;
+  line-height: 1.8;
+}
+
+/* INDIVIDUAL COLORS */
+
+.blue {
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.purple {
+  color: #c084fc;
+  font-weight: bold;
+}
+
+.green {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.pink {
+  color: #f472b6;
+  font-weight: bold;
+}
+
+.yellow {
+  color: #fde047;
+  font-weight: bold;
+}
+
+/* APPEAR ANIMATION */
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
