@@ -23,7 +23,7 @@ const questions = [
   question: "What is 6 × 56?",
   answers: ["336", "346"],
   correct: "336",
-  explanation: "6x50=300 6x6=36 300+36=336"
+  explanation: "6x50=300 and 6x6=36  so the answer is 300+36=336"
   },
   {
   question: "I have 4 pants, 3 underwhere and 2 shirts how many ways can I dress up",
