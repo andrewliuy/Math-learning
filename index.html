@@ -1,87 +1,856 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My Math Journey</title>
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #11152b;
+      --panel: #1b213b;
+      --border: #414b73;
+      --text: #f5f4ff;
+      --muted: #c3cae5;
+      --accent: #cdbdff;
+      --green: #a9efd3;
+      --pink: #ffc1ce;
+    }
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at top right, #34265d, transparent 65%),
+        var(--background);
+      color: var(--text);
+      font: 1rem/1.6 system-ui, sans-serif;
+    }
+
+    header, main {
+      width: min(920px, calc(100% - 32px));
+      margin: auto;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    main {
+      padding: 30px 0 60px;
+    }
+
+    nav, .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h1, h2, h3, p {
+      margin: 0 0 12px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      line-height: 1.25;
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    .panel, .tile, .note {
+      padding: clamp(16px, 4vw, 30px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+
+    .tile, .note {
+      padding: 16px;
+      background: #252c4a;
+    }
+
+    .note {
+      margin: 16px 0;
+    }
+
+    .note p:last-child {
+      margin-bottom: 0;
+    }
+
+    .label {
+      color: var(--accent);
+      font-size: .85rem;
+      font-weight: 750;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .grid, .answers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 9px 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #2a3253;
+      color: var(--text);
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) {
+      border-color: var(--accent);
+    }
+
+    button[aria-pressed="true"], button[aria-current="page"] {
+      outline: 2px solid var(--accent);
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: .65;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #191130;
+      border-color: transparent;
+    }
+
+    :focus-visible {
+      outline: 3px solid #a4eaff;
+      outline-offset: 3px;
+    }
+
+    progress {
+      display: block;
+      width: 100%;
+      margin: 12px 0 22px;
+      accent-color: var(--accent);
+    }
+
+    details {
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    summary {
+      cursor: pointer;
+    }
+
+    details p {
+      margin: 8px 0;
+    }
+
+    .correct {
+      color: var(--green);
+    }
+
+    .incorrect {
+      color: var(--pink);
+    }
+
+    #notice:empty {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
-
   <header>
-    <h1>Welcome to Your Math Journey 🚀</h1>
-
-    <p class="subtitle">
-      Explore mathematics, challenge your thinking,
-      and unlock your problem-solving potential!
-    </p>
-
-    <div class="math-symbols">π ∑ √ ∞</div>
+    <strong>∑ My Math Journey</strong>
+    <nav id="navigation" aria-label="Learning workspace"></nav>
   </header>
 
   <main>
-
-    <div class="math-card">
-
-      <h2>📚 Learn Mathematics</h2>
-
-      <p>
-        Build your math skills with challenging problems,
-        creative solutions, and powerful mathematical ideas.
-      </p>
-
-
-<div class="question-box">
-
-  <p class="question-number" id="questionNumber">
-    QUESTION 1
-  </p>
-
-  <h2 id="questionText">What is 1 + 1?</h2>
-
-  <p>Come on, you got this! 💪</p>
-
-  <div class="answers">
-    <button id="answer1">2</button>
-    <button id="answer2">1</button>
-  </div>
-
-  <h2 id="result" aria-live="polite"></h2>
-
-  <button id="nextButton" hidden>
-    Next Question →
-  </button>
-
-</div>
-
-
-    <div class="scroll-section">
-      <h2>🌟 Keep Going!</h2>
-      <p>Every math genius starts with the basics.</p>
-      <p>Scroll down for a surprise!</p>
-    </div>
-
-    <div class="surprise-section">
-      <h2>🎉 You're Amazing!</h2>
-      <p>
-        Mathematics is an adventure.
-        Keep practicing and never give up!
-      </p>
-    </div>
-
+    <p id="notice" role="status"></p>
+    <div id="app"></div>
   </main>
 
-  <footer>
-    © 2026 My Math Journey | Keep Learning ✨
-  </footer>
+  <script>
+    "use strict";
 
-  <script src="script.js"></script>
+    const topics = ["Arithmetic", "Counting", "Geometry"];
+    const levels = ["Foundations", "Core", "Challenge"];
 
+    // Each row contains the question, correct answer, other choices, and solution.
+    const placementBank = {
+      Arithmetic: [
+        ["What is 1 + 1?", "2", ["1"], "Start with 1 and count one more. You reach 2."],
+        ["What is 5 + 3?", "8", ["7"], "Count three numbers after 5: 6, 7, 8."],
+        ["What is 6 × 4?", "24", ["20"], "Four groups of six give 6 + 6 + 6 + 6 = 24."],
+        ["What is 12 × 12?", "144", ["124"], "Split 12 into 10 + 2. Then 12 × 10 + 12 × 2 = 120 + 24 = 144."],
+        ["What is 81 ÷ 9?", "9", ["8"], "Ask what number times 9 equals 81. Since 9 × 9 = 81, the answer is 9."],
+        ["What is 2⁵?", "32", ["25"], "Multiply five copies of 2: 2 × 2 × 2 × 2 × 2 = 32."],
+        ["What is 3/4 of 20?", "15", ["12"], "One quarter is 20 ÷ 4 = 5. Three quarters are 3 × 5 = 15."],
+        ["What is 15% of 200?", "30", ["15"], "10% is 20 and 5% is 10. Add them to get 30."],
+        ["What is the greatest common factor of 18 and 24?", "6", ["12"], "Their common factors are 1, 2, 3, and 6. The greatest is 6."],
+        ["What is the least common multiple of 6 and 8?", "24", ["48"], "The first multiples of 6 are 6, 12, 18, 24. The first multiples of 8 are 8, 16, 24."]
+      ],
+      Counting: [
+        ["How many outfits can you make with 3 shirts and 2 pairs of pants?", "6", ["5"], "Each of the 3 shirts goes with either of 2 pairs of pants. Multiply 3 × 2."],
+        ["How many ways can you arrange 3 different books in a row?", "6", ["9"], "There are 3 choices for the first book, 2 for the next, and 1 for the last."],
+        ["How many two-digit numbers can use 1, 2, and 3 without repeating a digit?", "6", ["9"], "There are 3 choices for the tens digit and 2 left for the ones digit."],
+        ["How many two-person teams can you choose from 5 students?", "10", ["20"], "There are 5 × 4 ordered pairs. Divide by 2 because each team appears in both orders."],
+        ["How many ordered outcomes are possible when flipping 3 coins?", "8", ["6"], "Each flip gives two choices, so multiply 2 × 2 × 2."],
+        ["How many ways can 4 different people line up?", "24", ["16"], "Fill the positions in order: 4 × 3 × 2 × 1 = 24."],
+        ["How many ways can you choose 3 toppings from 5 different toppings?", "10", ["15"], "First count ordered selections: 5 × 4 × 3. Divide by 3 × 2 × 1 because each set appears six times."],
+        ["A password has 2 digits from 0 to 9. Repetition and leading zeros are allowed. How many passwords are possible?", "100", ["90"], "Both positions have 10 choices, so there are 10 × 10 passwords."],
+        ["How many diagonals does a pentagon have?", "5", ["10"], "Each vertex connects to 2 non-neighbor vertices. Count 5 × 2, then divide by 2 because each diagonal has two endpoints."],
+        ["How many ways can you choose a president and a vice president from 4 students?", "12", ["6"], "There are 4 choices for president and 3 left for vice president. The roles are different, so multiply 4 × 3."]
+      ],
+      Geometry: [
+        ["What is the area of a rectangle with length 8 and width 5?", "40", ["26"], "Multiply length by width: 8 × 5 = 40 square units."],
+        ["What is the perimeter of a square with side length 7?", "28", ["49"], "Add all four equal sides: 4 × 7 = 28 units."],
+        ["Two angles of a triangle are 50° and 60°. What is the third?", "70°", ["80°"], "Triangle angles add to 180°. Subtract 50° and 60° to get 70°."],
+        ["What is the area of a triangle with base 10 and perpendicular height 6?", "30", ["60"], "Take half of base times height: 10 × 6 ÷ 2 = 30."],
+        ["A right triangle has legs 3 and 4. What is its hypotenuse?", "5", ["7"], "The hypotenuse squared is 3² + 4² = 25. Take the square root to get 5."],
+        ["What is the circumference of a circle with radius 5?", "10π", ["25π"], "Circumference is 2πr. Substitute 5 for r to get 10π."],
+        ["What is the area of a circle with radius 3?", "9π", ["6π"], "Area is πr². Substitute 3 for r to get 9π."],
+        ["How many degrees are in the interior angles of a quadrilateral altogether?", "360°", ["180°"], "A diagonal splits the quadrilateral into two triangles. Their angle sums total 2 × 180°."],
+        ["A rectangular prism measures 3 × 4 × 5. What is its volume?", "60", ["47"], "Multiply length, width, and height: 3 × 4 × 5 = 60 cubic units."],
+        ["What is each interior angle of a regular hexagon?", "120°", ["135°"], "A hexagon splits into four triangles, so its angle sum is 720°. Divide by 6 equal angles to get 120°."]
+      ]
+    };
+
+    const lessons = {
+      Arithmetic: [
+        [
+          "Break a multiplication into parts",
+          "Use the distributive property. Split one number into tens and ones, multiply each part, and add the results.",
+          "17 × 6 = (10 + 7) × 6 = 60 + 42 = 102."
+        ],
+        [
+          "Find a fraction of a number",
+          "Divide the number by the denominator to find one equal part. Multiply by the numerator to count the parts you need.",
+          "3/4 of 28 = 3 × (28 ÷ 4) = 21."
+        ],
+        [
+          "Work backward from a discount",
+          "The sale price is a fraction of the original price. Divide the sale price by the fraction you paid.",
+          "After a 25% discount, you pay 75%. If that costs $36, the original price is $36 ÷ 0.75 = $48."
+        ]
+      ],
+      Counting: [
+        [
+          "Multiply independent choices",
+          "When each first choice can be matched with each second choice, multiply their counts.",
+          "With 4 shirts and 3 pairs of pants, you can make 4 × 3 = 12 outfits."
+        ],
+        [
+          "Decide whether order matters",
+          "For an unordered pair, count the ordered pairs and divide by 2. Each team was counted in two orders.",
+          "Five students make 5 × 4 ÷ 2 = 10 two-person teams."
+        ],
+        [
+          "Count the complement",
+          "For an “at least one” problem, count all outcomes and subtract the outcomes with none.",
+          "Four coin flips have 2⁴ = 16 sequences. Only TTTT has no heads, so 15 sequences have at least one head."
+        ]
+      ],
+      Geometry: [
+        [
+          "Use the perpendicular height",
+          "A triangle has half the area of a parallelogram with the same base and perpendicular height.",
+          "A triangle with base 9 and perpendicular height 4 has area 9 × 4 ÷ 2 = 18 square units."
+        ],
+        [
+          "Find a missing leg",
+          "The hypotenuse is across from the right angle. Subtract the known leg squared from the hypotenuse squared, then take the square root.",
+          "If the hypotenuse is 13 and one leg is 5, the other leg is √(13² − 5²) = √144 = 12."
+        ],
+        [
+          "Read the equation of a circle",
+          "In (x − h)² + (y − k)² = r², every point is distance r from (h, k). The enclosed area is πr².",
+          "The 6-foot ladder gives (x − 3√2)² + (y + 3√2)² = 36. The full circle has area 36π square feet. The actual ladder motion traces an arc."
+        ]
+      ]
+    };
+
+    const placement = topics.flatMap(topic =>
+      placementBank[topic].map(([prompt, correct, choices, solution]) => ({
+        topic,
+        prompt,
+        correct,
+        choices: [correct, ...choices],
+        solution
+      }))
+    );
+
+    function randomInt(min, max) {
+      return min + Math.floor(Math.random() * (max - min + 1));
+    }
+
+    function shuffle(items) {
+      const shuffled = [...items];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const other = randomInt(0, index);
+        [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+      }
+
+      return shuffled;
+    }
+
+    function makeProblem(prompt, answer, distractors, hint, solution) {
+      const correct = String(answer);
+      return {
+        prompt,
+        correct,
+        choices: shuffle([correct, ...distractors.map(String)]),
+        hint,
+        solution
+      };
+    }
+
+    const generators = {
+      Arithmetic: [
+        () => {
+          const a = randomInt(13, 49);
+          const b = randomInt(3, 9);
+          const tens = Math.floor(a / 10) * 10;
+          const ones = a - tens;
+          const answer = a * b;
+
+          return makeProblem(
+            `What is ${a} × ${b}?`, answer,
+            [answer + b, answer - b, answer + 10],
+            "Split the first number into tens and ones.",
+            `(${tens} + ${ones}) × ${b} = ${tens * b} + ${ones * b} = ${answer}.`
+          );
+        },
+        () => {
+          const denominator = randomInt(5, 12);
+          const part = randomInt(3, 9);
+          const total = denominator * part;
+
+          return makeProblem(
+            `What is 3/${denominator} of ${total}?`, 3 * part,
+            [part, 3 * part + 3, 3 * part + denominator],
+            `Find 1/${denominator} of ${total} first.`,
+            `${total} ÷ ${denominator} = ${part}. Then 3 × ${part} = ${3 * part}.`
+          );
+        },
+        () => {
+          const original = randomInt(5, 25) * 20;
+          const discount = [20, 25, 40][randomInt(0, 2)];
+          const paid = 100 - discount;
+          const sale = original * paid / 100;
+
+          return makeProblem(
+            `After a ${discount}% discount, an item costs $${sale}. What was the original price in dollars?`,
+            original, [sale, sale * (100 + discount) / 100, original + 20],
+            "What percent of the original price did you pay?",
+            `You paid ${paid}% of the original price. Divide ${sale} by ${paid / 100} to get $${original}.`
+          );
+        }
+      ],
+      Counting: [
+        () => {
+          const shirts = randomInt(3, 9);
+          const pants = randomInt(5, 12);
+          const answer = shirts * pants;
+
+          return makeProblem(
+            `How many outfits can you make with ${shirts} shirts and ${pants} pairs of pants?`,
+            answer, [shirts + pants, answer - shirts, answer + 1],
+            "How many pairs of pants can go with each shirt?",
+            `Each of ${shirts} shirts goes with ${pants} pairs of pants. Multiply ${shirts} × ${pants} = ${answer}.`
+          );
+        },
+        () => {
+          const students = randomInt(5, 12);
+          const answer = students * (students - 1) / 2;
+
+          return makeProblem(
+            `How many different two-person teams can you choose from ${students} students?`,
+            answer, [2 * answer, students, answer + 1],
+            "Choosing Alex then Sam gives the same team as choosing Sam then Alex.",
+            `Count ${students} × ${students - 1} ordered pairs. Divide by 2 to get ${answer} teams.`
+          );
+        },
+        () => {
+          const flips = randomInt(4, 8);
+          const total = 2 ** flips;
+
+          return makeProblem(
+            `A coin is flipped ${flips} times. How many ordered sequences include at least one head?`,
+            total - 1, [total, total - 2, total / 2],
+            "Start with all sequences. How many sequences contain zero heads?",
+            `There are 2^${flips} = ${total} sequences. Remove the all-tails sequence to get ${total - 1}.`
+          );
+        }
+      ],
+      Geometry: [
+        () => {
+          const base = randomInt(13, 49);
+          const height = 2 * randomInt(3, 9);
+          const area = base * height / 2;
+
+          return makeProblem(
+            `A triangle has base ${base} and perpendicular height ${height}. What is its area?`,
+            area, [2 * area, base + height, area + 2],
+            "Find half the area of a rectangle with that base and height.",
+            `${base} × ${height} ÷ 2 = ${area} square units.`
+          );
+        },
+        () => {
+          const scale = randomInt(2, 10);
+          const hypotenuse = 5 * scale;
+          const leg = 3 * scale;
+          const answer = 4 * scale;
+
+          return makeProblem(
+            `A right triangle has hypotenuse ${hypotenuse} and one leg ${leg}. How long is the other leg?`,
+            answer, [2 * scale, hypotenuse, hypotenuse + leg],
+            "Subtract the square of the known leg from the square of the hypotenuse.",
+            `The unknown leg is √(${hypotenuse}² − ${leg}²) = √${answer ** 2} = ${answer}.`
+          );
+        },
+        () => {
+          const radius = randomInt(3, 12);
+          const right = randomInt(1, 12);
+          const down = randomInt(1, 12);
+          const square = radius ** 2;
+
+          return makeProblem(
+            `What is the coefficient of π in the area enclosed by (x − ${right})² + (y + ${down})² = ${square}?`,
+            square, [radius, 2 * radius, square ** 2],
+            "The right side is the radius squared. Which part of πr² is the coefficient of π?",
+            `The center is (${right}, −${down}). The radius is √${square} = ${radius}, so the area is ${square}π.`
+          );
+        }
+      ]
+    };
+
+    const storageKey = "my-math-journey-v1";
+    const app = document.getElementById("app");
+    const navigation = document.getElementById("navigation");
+    const notice = document.getElementById("notice");
+
+    let page = "home";
+    let activeTopic = topics[0];
+    let practice;
+    let state = loadProgress();
+
+    function loadProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+
+        if (
+          saved &&
+          Array.isArray(saved.placement) &&
+          saved.placement.length <= placement.length &&
+          saved.stats &&
+          Array.isArray(saved.mistakes)
+        ) {
+          return saved;
+        }
+      } catch {
+        notice.textContent = "Saved progress could not be loaded.";
+      }
+
+      return { placement: [], stats: {}, mistakes: [] };
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(state));
+      } catch {
+        notice.textContent = "Your browser blocked saving. Progress is available for this session.";
+      }
+    }
+
+    function create(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+
+    function button(text, onClick, className) {
+      const node = create("button", text, className);
+      node.type = "button";
+      node.addEventListener("click", onClick);
+      return node;
+    }
+
+    function card(label, title, headingTag = "h2") {
+      const section = create("section", undefined, "panel");
+      const heading = create(headingTag, title);
+      heading.tabIndex = -1;
+      if (label) section.append(create("p", label, "label"));
+      section.append(heading);
+      app.append(section);
+      return section;
+    }
+
+    function show(nextPage) {
+      page = nextPage;
+      render();
+      app.querySelector("h1, h2")?.focus();
+    }
+
+    function placementFinished() {
+      return state.placement.length === placement.length;
+    }
+
+    function scoreFor(topic) {
+      return placement.reduce((score, question, index) => {
+        return score + Number(
+          question.topic === topic && state.placement[index] === question.correct
+        );
+      }, 0);
+    }
+
+    function statsFor(topic) {
+      const score = scoreFor(topic);
+
+      return state.stats[topic] ?? {
+        level: score >= 9 ? 2 : score >= 6 ? 1 : 0,
+        streak: 0,
+        misses: 0,
+        solved: 0,
+        earned: false
+      };
+    }
+
+    function render() {
+      app.replaceChildren();
+      const links = [["Home", "home"]];
+
+      if (placementFinished()) {
+        links.push(["Study plan", "plan"], ["Mistake notebook", "review"]);
+      }
+
+      navigation.replaceChildren(...links.map(([text, destination]) => {
+        const link = button(text, () => show(destination));
+        if (page === destination) link.setAttribute("aria-current", "page");
+        return link;
+      }));
+
+      const renderers = {
+        home: renderHome,
+        placement: renderPlacement,
+        plan: renderPlan,
+        lesson: renderLesson,
+        practice: renderPractice,
+        review: renderReview
+      };
+
+      renderers[page]();
+    }
+
+    function renderHome() {
+      const section = card(null, "My Math Journey", "h1");
+
+      section.append(create(
+        "p",
+        "Find your starting level in arithmetic, counting, and geometry. Then build your skills with examples, hints, and practice."
+      ));
+
+      if (placementFinished()) {
+        section.append(button("Open study plan", () => show("plan"), "primary"));
+        return;
+      }
+
+      const label = state.placement.length ? "Resume placement" : "Start 30-question placement";
+      section.append(button(label, () => show("placement"), "primary"));
+    }
+
+    function renderPlacement() {
+      const index = state.placement.length;
+      const question = placement[index];
+      const section = card(`Placement · Question ${index + 1} of ${placement.length}`, question.prompt);
+      const progress = create("progress");
+      progress.max = placement.length;
+      progress.value = index;
+      progress.setAttribute("aria-label", "Placement questions submitted");
+      section.append(progress);
+
+      let selected = null;
+      const answers = create("div", undefined, "answers");
+      const actions = create("div", undefined, "actions");
+
+      function submit(answer) {
+        if (state.placement.length !== index) return;
+
+        state.placement.push(answer);
+        saveProgress();
+        show(placementFinished() ? "plan" : "placement");
+      }
+
+      const next = button(
+        index === placement.length - 1 ? "See results" : "Next question",
+        () => submit(selected),
+        "primary"
+      );
+
+      next.disabled = true;
+
+      for (const option of shuffle(question.choices)) {
+        const choice = button(option, () => {
+          selected = option;
+
+          for (const answer of answers.children) {
+            answer.setAttribute("aria-pressed", String(answer === choice));
+          }
+
+          next.disabled = false;
+        });
+
+        choice.setAttribute("aria-pressed", "false");
+        answers.append(choice);
+      }
+
+      actions.append(next, button("I’m not sure", () => submit(null)));
+      section.append(answers, actions);
+    }
+
+    function renderPlan() {
+      const section = card("Placement complete", "Your study plan");
+      const ranked = [...topics].sort((a, b) => scoreFor(a) - scoreFor(b));
+      const recommended = ranked[0];
+      const total = topics.reduce((sum, topic) => sum + scoreFor(topic), 0);
+
+      section.append(create(
+        "p",
+        `You scored ${total}/${placement.length}. Start with ${recommended}, or choose any topic below.`
+      ));
+
+      const grid = create("div", undefined, "grid");
+
+      for (const topic of ranked) {
+        const stats = statsFor(topic);
+        const tile = create("section", undefined, "tile");
+
+        tile.append(
+          create("h3", topic),
+          create("p", `Placement ${scoreFor(topic)}/10 · ${levels[stats.level]}`),
+          create("p", `Solved independently in practice: ${stats.solved}`),
+          button(`Study ${topic.toLowerCase()}`, () => {
+            activeTopic = topic;
+            show("lesson");
+          }, topic === recommended ? "primary" : undefined)
+        );
+
+        if (stats.earned) {
+          tile.append(create("p", "Challenge streak earned", "correct"));
+        }
+
+        grid.append(tile);
+      }
+
+      section.append(grid);
+    }
+
+    function renderLesson() {
+      const level = statsFor(activeTopic).level;
+      const [title, idea, example] = lessons[activeTopic][level];
+      const section = card(`${activeTopic} · ${levels[level]}`, title);
+      const workedExample = create("div", undefined, "note");
+
+      workedExample.append(create("h3", "Worked example"), create("p", example));
+
+      section.append(
+        create("p", idea),
+        workedExample,
+        button("Start practice", startPractice, "primary")
+      );
+    }
+
+    function startPractice() {
+      const level = statsFor(activeTopic).level;
+      const generate = generators[activeTopic][level];
+      const previousPrompt = practice?.question.prompt;
+      let question = generate();
+
+      for (let retry = 0; retry < 5 && question.prompt === previousPrompt; retry += 1) {
+        question = generate();
+      }
+
+      practice = {
+        question,
+        level,
+        hinted: false,
+        answer: null,
+        feedback: ""
+      };
+
+      show("practice");
+    }
+
+    function gradePractice(answer) {
+      if (practice.feedback) return;
+
+      const { question, hinted } = practice;
+      const stats = statsFor(activeTopic);
+      const correct = answer === question.correct;
+      practice.answer = answer;
+      practice.feedback = correct ? "Correct!" : "Let’s work through it.";
+
+      if (correct) {
+        stats.misses = 0;
+        stats.streak = hinted ? 0 : stats.streak + 1;
+        if (!hinted) stats.solved += 1;
+
+        if (stats.streak === 3) {
+          stats.streak = 0;
+
+          if (stats.level < levels.length - 1) {
+            stats.level += 1;
+            practice.feedback = `Correct! You unlocked ${levels[stats.level]} practice.`;
+          } else {
+            stats.earned = true;
+            practice.feedback = "Correct! You earned a three-question Challenge streak.";
+          }
+        }
+      } else {
+        stats.streak = 0;
+        stats.misses += 1;
+
+        const mistake = {
+          topic: activeTopic,
+          question: question.prompt,
+          answer,
+          correct: question.correct,
+          solution: question.solution
+        };
+
+        state.mistakes = [
+          mistake,
+          ...state.mistakes.filter(item => item.question !== mistake.question)
+        ].slice(0, 100);
+
+        if (stats.misses >= 2 && stats.level > 0) {
+          stats.level -= 1;
+          stats.misses = 0;
+          practice.feedback = `Review the solution, then try a ${levels[stats.level]} question.`;
+        }
+      }
+
+      state.stats[activeTopic] = stats;
+      saveProgress();
+      render();
+      document.getElementById("feedback").focus();
+    }
+
+    function renderPractice() {
+      const { question, level, hinted, answer, feedback } = practice;
+      const section = card(`${activeTopic} · ${levels[level]}`, question.prompt);
+      const answers = create("div", undefined, "answers");
+
+      for (const option of question.choices) {
+        let label = option;
+
+        if (feedback && option === question.correct) {
+          label += " ✓ Correct answer";
+        } else if (feedback && option === answer) {
+          label += " · Your choice";
+        }
+
+        const choice = button(label, () => gradePractice(option));
+        choice.disabled = Boolean(feedback);
+        answers.append(choice);
+      }
+
+      section.append(answers);
+
+      if (feedback) {
+        const result = create("div", undefined, "note");
+        const heading = create(
+          "h3", feedback, answer === question.correct ? "correct" : "incorrect"
+        );
+
+        heading.id = "feedback";
+        heading.tabIndex = -1;
+        result.append(heading, create("p", question.solution));
+
+        const actions = create("div", undefined, "actions");
+        actions.append(button("Next practice question", startPractice, "primary"));
+
+        if (statsFor(activeTopic).level !== level) {
+          actions.append(button("Read the lesson for your new level", () => show("lesson")));
+        }
+
+        section.append(result, actions);
+      } else if (hinted) {
+        const hint = create("p", question.hint, "note");
+        hint.id = "practiceHint";
+        hint.tabIndex = -1;
+        section.append(hint);
+      } else {
+        section.append(button("Show a hint", () => {
+          practice.hinted = true;
+          render();
+          document.getElementById("practiceHint").focus();
+        }));
+      }
+    }
+
+    function addReviewItem(section, prompt, answer, correct, solution) {
+      const item = create("details");
+
+      item.append(
+        create("summary", prompt),
+        create("p", `Your answer: ${answer ?? "Skipped"}. Correct answer: ${correct}.`),
+        create("p", solution)
+      );
+
+      section.append(item);
+    }
+
+    function renderReview() {
+      const section = card(null, "Mistake notebook");
+      const missedPlacement = placement
+        .map((question, index) => ({ ...question, answer: state.placement[index] }))
+        .filter(question => question.answer !== question.correct);
+
+      if (!missedPlacement.length && !state.mistakes.length) {
+        section.append(create("p", "You haven’t missed any questions yet."));
+      }
+
+      if (missedPlacement.length) {
+        section.append(create("h3", "Placement review"));
+
+        for (const item of missedPlacement) {
+          addReviewItem(section, item.prompt, item.answer, item.correct, item.solution);
+        }
+      }
+
+      if (state.mistakes.length) {
+        section.append(create("h3", "Practice review"));
+
+        for (const item of state.mistakes) {
+          addReviewItem(section, item.question, item.answer, item.correct, item.solution);
+        }
+      }
+    }
+
+    render();
+  </script>
 </body>
 </html>
