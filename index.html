@@ -3,460 +3,578 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Math Quest</title>
+  <title>Math Quest RPG</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #090e20;
-      --panel: #131d36;
-      --line: #344466;
-      --text: #f4f6ff;
-      --muted: #b7c5e2;
-      --mint: #86ffd5;
-      --gold: #ffd884;
-      --pink: #ffabbc;
+      --ink: #f7f5ff;
+      --muted: #c2cce8;
+      --panel: #181c35;
+      --edge: #424c70;
+      --mint: #9dffd7;
+      --gold: #ffdb85;
+      --rose: #ffb1c7;
+      --realm: #a2b8ff;
     }
 
     * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-
     body {
       margin: 0;
-      min-height: 100vh;
+      color: var(--ink);
+      background: radial-gradient(ellipse at 75% 0%, #302750, transparent 50%), #0d1022;
       font: 1rem/1.55 system-ui, sans-serif;
-      color: var(--text);
-      background: radial-gradient(ellipse at 80% 0%, #292351, transparent 38rem), var(--bg);
+      min-height: 100vh;
     }
 
-    header, main {
-      width: min(1120px, calc(100% - 32px));
-      margin: auto;
-    }
-
-    header {
-      padding: 16px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    main { padding-bottom: 56px; }
+    header, main { width: min(1080px, calc(100% - 28px)); margin: auto; }
+    header { display: flex; justify-content: space-between; padding: 16px 0; }
+    header, nav, .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    main { padding-bottom: 50px; }
     h1, h2, h3, p { margin: 0 0 .65em; }
-    h1 { font-size: clamp(2.6rem, 9vw, 6.3rem); line-height: .95; letter-spacing: -.075em; }
-    h2 { font-size: clamp(1.55rem, 4vw, 2.5rem); line-height: 1.12; }
-    h3 { line-height: 1.25; }
-    p, li { color: var(--muted); }
-    strong { color: var(--text); }
-    .brand { font-weight: 900; letter-spacing: .04em; color: var(--mint); }
-    .xp { color: var(--gold); font-weight: 800; }
-    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-    .eyebrow { color: var(--mint); font-size: .8rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { font-size: clamp(2.4rem, 8vw, 5.6rem); line-height: 1; letter-spacing: -.055em; }
+    h2 { font-size: clamp(1.5rem, 4vw, 2.4rem); line-height: 1.14; }
+    h3 { line-height: 1.3; }
+    p { color: var(--muted); }
+    .brand, .eyebrow { color: var(--mint); font-weight: 850; letter-spacing: .07em; }
+    .eyebrow { font-size: .82rem; text-transform: uppercase; }
+    .gold { color: var(--gold); }
 
-    button {
+    button, input {
       min-height: 44px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 9px 16px;
-      background: #202e50;
-      color: var(--text);
+      border: 1px solid var(--edge);
+      border-radius: 11px;
+      padding: 9px 14px;
+      color: var(--ink);
+      background: #263050;
       font: inherit;
-      font-weight: 740;
-      cursor: pointer;
     }
 
-    button:hover:not(:disabled) { border-color: var(--mint); background: #2c416c; }
-    button.primary { background: var(--mint); border-color: var(--mint); color: #09231d; }
-    button.primary:hover:not(:disabled) { background: #b9ffe7; }
-    button:disabled { opacity: .6; cursor: default; }
+    button { font-weight: 750; cursor: pointer; }
+    button:hover:not(:disabled) { border-color: var(--mint); }
+    button:disabled { opacity: .55; cursor: default; }
+    button.primary { background: var(--mint); border-color: var(--mint); color: #10231e; }
+    button[aria-pressed="true"] { outline: 2px solid var(--realm); }
     :focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+    input { flex: 1 1 140px; min-width: 0; }
 
-    .hero {
+    .panel, .tile, .note {
+      border: 1px solid var(--edge);
+      border-radius: 18px;
+      background: var(--panel);
+      padding: clamp(15px, 4vw, 30px);
+    }
+
+    .panel { margin-top: 14px; }
+    .tile, .note { padding: 15px; background: #202745; }
+    .note { margin: 14px 0; }
+    .note p:last-child, .tile p:last-child { margin-bottom: 0; }
+    .note ol { padding-left: 24px; margin-bottom: 0; }
+    .note li { margin: 6px 0; }
+    .good { color: var(--mint); }
+    .bad { color: var(--rose); }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); }
+    .unit { border-top: 1px solid var(--edge); padding: 12px 0; }
+    summary { cursor: pointer; font-weight: 750; }
+    .level { display: grid; gap: 3px; text-align: left; }
+    .level small { font-weight: 500; color: var(--muted); }
+    .question { font-size: clamp(1.23rem, 3vw, 1.85rem); }
+    progress { width: 100%; height: 13px; accent-color: var(--mint); }
+    form label { width: 100%; font-weight: 700; }
+
+    .landscape {
       position: relative;
       isolation: isolate;
-      min-height: 380px;
       overflow: hidden;
       display: grid;
       align-items: center;
-      padding: clamp(22px, 6vw, 64px);
-      border: 1px solid #52628e;
-      border-radius: 26px;
-      background: #19284a;
+      min-height: 340px;
+      padding: clamp(20px, 6vw, 62px);
+      border: 1px solid #68669a;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 77% 29%, #f7deff 0 29px, #e9a8ff57 30px, transparent 80px),
+        radial-gradient(circle at 19% 23%, #fff 0 1px, transparent 2px) 0 0 / 83px 67px,
+        radial-gradient(circle at 81% 41%, #dfcaff 0 1px, transparent 2px) 0 0 / 139px 93px,
+        linear-gradient(160deg, #151334, #42386f 65%, #c0759b);
     }
 
-    #sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
-
-    .hero::after {
+    .landscape::before, .landscape::after {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: 23% 0 0;
+      z-index: -2;
+      background: #363868;
+      clip-path: polygon(0 83%, 12% 48%, 24% 75%, 39% 16%, 53% 65%, 70% 32%, 86% 63%, 100% 27%, 100% 100%, 0 100%);
+    }
+
+    .landscape::after {
+      inset: 40% 0 0;
       z-index: -1;
-      background: linear-gradient(90deg, #0b1227 3%, #0b1227dc 39%, #0b122730 77%);
+      background: linear-gradient(#23375c, #101c36);
+      clip-path: polygon(0 54%, 17% 73%, 32% 49%, 51% 78%, 68% 62%, 81% 32%, 100% 55%, 100% 100%, 0 100%);
     }
 
-    .hero p:not(.eyebrow) { max-width: 33ch; margin: 14px 0 20px; }
-    .section-title { margin-top: 28px; }
-
-    .worlds {
+    .hero-copy { max-width: 450px; text-shadow: 0 2px 12px #0e1027; }
+    .hero-copy p { color: #f2ecff; }
+    .map-trail {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
     }
-
-    .world, .panel, .note {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: clamp(16px, 4vw, 32px);
+    .map-trail button {
+      min-width: 0;
+      min-height: 98px;
+      padding: 8px;
+      overflow-wrap: anywhere;
+      background: linear-gradient(145deg, #2c395f, #222642);
     }
-
-    .world { padding: 18px; }
-    .panel { margin-top: 14px; }
-    .note { padding: 16px; margin: 14px 0; background: #1b2947; }
-    .world-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .world-head h3 { margin: 0; }
-
-    .sigil {
+    .map-trail span { display: block; font-size: 1.65rem; }
+    .trail-active { color: var(--mint); }
+    .arena {
+      min-height: 180px;
       display: grid;
-      place-items: center;
-      flex: 0 0 52px;
-      height: 52px;
-      border: 1px solid currentColor;
-      border-radius: 15px;
-      color: var(--world);
-      font-size: 1.6rem;
-      font-weight: 800;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      background:
+        radial-gradient(ellipse at 20% 105%, #7f61ca71, transparent 54%),
+        radial-gradient(ellipse at 86% 15%, #65dbea30, transparent 45%),
+        linear-gradient(#171739 65%, #253052 66%);
     }
 
-    details { border-top: 1px solid var(--line); padding: 10px 0; }
-    details p { margin: 7px 0; }
-    summary { cursor: pointer; font-weight: 700; }
-    .chapter { margin-top: 8px; }
-    .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
-    .answers button { text-align: left; overflow-wrap: anywhere; }
-    .answers button[aria-pressed="true"] { border-color: var(--mint); box-shadow: inset 0 0 0 1px var(--mint); }
-    progress { display: block; width: 100%; height: 12px; margin: 8px 0 20px; accent-color: var(--mint); }
-    .good { color: var(--mint); }
-    .bad { color: var(--pink); }
+    .fighter { text-align: center; min-width: 0; }
+    .fighter strong { display: block; }
+    .sprite {
+      display: block;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      border-radius: 23px 23px 17px 17px;
+      background:
+        radial-gradient(circle at 35% 45%, #f5fff9 0 4px, transparent 5px),
+        radial-gradient(circle at 65% 45%, #f5fff9 0 4px, transparent 5px),
+        linear-gradient(145deg, #9d99ff, #6049b2 66%, #382d76);
+      border: 3px solid #c7b9ff;
+      box-shadow: 0 10px 22px #0007, inset 0 -10px #291c6444;
+      animation: hover 2.8s ease-in-out infinite alternate;
+    }
+    .sprite.monster {
+      border-color: #ffc189;
+      border-radius: 31px 31px 13px 13px;
+      background:
+        radial-gradient(circle at 34% 46%, #2f142d 0 5px, transparent 6px),
+        radial-gradient(circle at 66% 46%, #2f142d 0 5px, transparent 6px),
+        linear-gradient(145deg, #ffe08b, #e47988 70%, #7d385f);
+      animation-delay: -.9s;
+    }
+    .fighter:last-child progress { accent-color: var(--rose); }
     #notice:empty { display: none; }
-
-    @media (max-width: 520px) {
-      .answers { grid-template-columns: 1fr; }
-      .hero { min-height: 340px; }
-      .hero::after { background: linear-gradient(90deg, #0b1227ed, #0b122787); }
-    }
+    @keyframes hover { to { transform: translateY(-7px) rotate(3deg); } }
+    @media (prefers-reduced-motion: reduce) { .sprite { animation: none; } }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">✦ MATH QUEST</div>
-    <nav class="actions" aria-label="Game navigation">
-      <button id="mapButton">World map</button>
-      <button id="journalButton">Quest journal</button>
-      <span class="xp" id="xp"></span>
+    <div class="brand">✦ Math Quest RPG</div>
+    <nav aria-label="Game navigation">
+      <button id="mapButton" type="button">World map</button>
+      <button id="shopButton" type="button">Shop</button>
+      <button id="journalButton" type="button">Journal</button>
     </nav>
+    <strong id="inventory" class="gold"></strong>
   </header>
-
   <main>
     <p id="notice" role="status"></p>
-
-    <section id="map">
-      <div class="hero">
-        <canvas id="sky" aria-hidden="true"></canvas>
-        <div>
-          <p class="eyebrow">The academy world map</p>
-          <h1>Math Quest</h1>
-          <p>Explore the curriculum. Train in three realms. Clear chapter checkpoints to unlock your next quest.</p>
-          <button id="questButton" class="primary"></button>
-        </div>
-      </div>
-      <h2 class="section-title">Explore the curriculum</h2>
-      <p>Open any chapter to see what you’ll learn and try reading its worked example.</p>
-      <div id="worlds" class="worlds"></div>
-    </section>
-
-    <section id="screen" class="panel" hidden></section>
+    <div id="app"></div>
   </main>
 
   <script>
     "use strict";
 
-    // Each chapter has a lesson, a worked example, and several problem families.
-    // Problem families generate fresh values for placement, practice, and checkpoints.
+    const ranks = ["Apprentice", "Scout", "Knight", "Master"];
+    const checkpointLength = 4;
+    const diagnosticLength = 30;
+    const startingHP = 3;
+    const storageKey = "math-quest-rpg-120-v1";
+
+    function skill(title, rule, create) {
+      return { title, rule, create };
+    }
+
+    function question(prompt, answer, steps) {
+      return { prompt, answer, steps };
+    }
+
+    function choose(n, k) {
+      let result = 1;
+      for (let i = 1; i <= k; i += 1) {
+        result = result * (n - i + 1) / i;
+      }
+      return Math.round(result);
+    }
+
+    function factorial(n) {
+      let result = 1;
+      for (let i = 2; i <= n; i += 1) result *= i;
+      return result;
+    }
+
+    function gcd(a, b) {
+      while (b !== 0) {
+        [a, b] = [b, a % b];
+      }
+      return a;
+    }
+
     const realms = [
       {
-        name: "Number Forge", subject: "Arithmetic", icon: "×", color: "#ffcf85",
-        chapters: [
-          {
-            title: "Whole Numbers",
-            goal: "Use place value and the distributive property to calculate efficiently.",
-            example: "37 × 6 = (30 + 7) × 6 = 180 + 42 = 222.",
-            problems: [
-              () => {
-                const a = random(42, 98), b = random(12, 35);
-                return problem(`What is ${a} − ${b}?`, a - b, [a + b, a - b + 10, a - b - 4],
-                  "Subtract the tens first, then subtract the ones.",
-                  `${a} − ${Math.floor(b / 10) * 10} = ${a - Math.floor(b / 10) * 10}. Subtract the remaining ${b % 10} to get ${a - b}.`);
-              },
-              () => {
-                const a = random(13, 39), b = random(3, 9);
-                const tens = a - a % 10, ones = a % 10;
-                return problem(`What is ${a} × ${b}?`, a * b, [a * b + b, a * b - b, a * b + 10],
-                  "Split the first number into tens and ones.",
-                  `(${tens} + ${ones}) × ${b} = ${tens * b} + ${ones * b} = ${a * b}.`);
-              }
-            ]
-          },
-          {
-            title: "Fractions & Percents",
-            goal: "Find a fractional or percentage part of a whole.",
-            example: "35% of 80 = 30% of 80 + 5% of 80 = 24 + 4 = 28.",
-            problems: [
-              () => {
-                const denominator = random(4, 9), part = random(3, 12);
-                const total = denominator * part;
-                return problem(`What is 3/${denominator} of ${total}?`, 3 * part, [part, 2 * part, 4 * part],
-                  "Find one equal part first.",
-                  `${total} ÷ ${denominator} = ${part}. Three parts make ${3 * part}.`);
-              },
-              () => {
-                const percent = random(2, 9) * 5, total = random(3, 15) * 20;
-                const answer = total * percent / 100;
-                return problem(`What is ${percent}% of ${total}?`, answer, [answer + 5, answer * 2, total - answer],
-                  "Write the percent as a fraction with a denominator of 100.",
-                  `${total} × ${percent}/100 = ${answer}.`);
-              }
-            ]
-          },
-          {
-            title: "Reverse Percent Problems",
-            goal: "Recover a starting amount from a final amount after a percent change.",
-            example: "After a 20% discount, $56 is 80% of the original price. Divide $56 by 0.80 to get $70.",
-            problems: [
-              () => {
-                const rate = [20, 25, 40][random(0, 2)], original = 20 * random(4, 22);
-                const sale = original * (100 - rate) / 100;
-                return problem(`After a ${rate}% discount, an item costs $${sale}. What was its price before the discount?`, original,
-                  [sale, original + 20, original - 10],
-                  "Figure out what percent of the original price you paid.",
-                  `$${sale} is ${100 - rate}% of the original price. Divide by ${(100 - rate) / 100} to get $${original}.`);
-              },
-              () => {
-                const rate = [10, 25, 50][random(0, 2)], original = 20 * random(4, 22);
-                const final = original * (100 + rate) / 100;
-                return problem(`A population grew by ${rate}% to ${final}. What was the starting population?`, original,
-                  [final, original - 10, original + 5],
-                  "The new population represents more than 100% of the original.",
-                  `${final} is ${100 + rate}% of the starting population. Divide by ${(100 + rate) / 100} to get ${original}.`);
-              }
-            ]
-          }
+        name: "Number Forge",
+        icon: "✹",
+        color: "#ffc081",
+        foe: " Ember Golem",
+        units: [
+          skill("Place Value & Subtraction", "Break the amount you subtract into place values. Subtract those chunks separately.",
+            (n, r) => {
+              const a = 84 + n + 100 * r;
+              const b = 16 + n % 9 + 67 * r;
+              const first = b - b % 10;
+              return question(`${a} − ${b} = ?`, a - b, [
+                `Break ${b} into ${first} + ${b % 10}.`,
+                `Subtract the first chunk: ${a} − ${first} = ${a - first}.`,
+                `Subtract the ones: ${a - first} − ${b % 10} = ${a - b}.`
+              ]);
+            }),
+          skill("Distributive Multiplication", "Split a factor into easier pieces. Multiply each piece and add the partial products.",
+            (n, r) => {
+              const a = 12 + n + 11 * r, b = 3 + r + n % 4;
+              const tens = a - a % 10, ones = a % 10;
+              return question(`${a} × ${b} = ?`, a * b, [
+                `Write ${a} as ${tens} + ${ones}.`,
+                `Multiply each part by ${b}: ${tens * b} and ${ones * b}.`,
+                `Add the partial products to get ${a * b}.`
+              ]);
+            }),
+          skill("Greatest Common Factors", "A common factor divides both numbers evenly. The remainder method preserves their common factors.",
+            (n, r) => {
+              const d = 3 + n;
+              const a = d * (3 + r), b = d * (5 + r);
+              const answer = gcd(a, b);
+              return question(`Find the greatest common factor of ${a} and ${b}.`, answer, [
+                `Divide ${b} by ${a} and keep the remainder ${b % a}.`,
+                "Keep dividing the previous divisor by the remainder until the remainder becomes zero.",
+                `The last nonzero remainder or divisor is ${answer}.`
+              ]);
+            }),
+          skill("Least Common Multiples", "The least common multiple is the smallest positive number both inputs divide evenly.",
+            (n, r) => {
+              const a = n + 6, b = n + 10 + 2 * r;
+              const common = gcd(a, b);
+              return question(`Find the least common multiple of ${a} and ${b}.`, a * b / common, [
+                `Find the greatest common factor: ${common}.`,
+                "The product counts the shared factor twice, so divide it by the greatest common factor.",
+                `${a} × ${b} ÷ ${common} = ${a * b / common}.`
+              ]);
+            }),
+          skill("Fractions of a Whole", "The denominator tells you how many equal parts make the whole. The numerator tells you how many parts to take.",
+            (n, r) => {
+              const numerator = r + 2, denominator = r + 5;
+              const part = n + 4;
+              return question(`What is ${numerator}/${denominator} of ${part * denominator}?`, part * numerator, [
+                `Divide the whole by ${denominator} to find one part: ${part}.`,
+                `Take ${numerator} parts: ${part} × ${numerator} = ${part * numerator}.`
+              ]);
+            }),
+          skill("Adding Fractions", "Fractions need a common denominator before you can add their numerators.",
+            (n, r) => {
+              const denominator = 5 + r;
+              const numerator = 1 + n % (denominator - 1);
+              return question(`Write ${numerator}/${denominator} + 1/${2 * denominator} with denominator ${2 * denominator}. What is its numerator?`, 2 * numerator + 1, [
+                `Multiply the first numerator and denominator by 2 to get ${2 * numerator}/${2 * denominator}.`,
+                `Add the numerators: ${2 * numerator} + 1 = ${2 * numerator + 1}.`
+              ]);
+            }),
+          skill("Unit Rates", "Divide a total by the number of units to find the amount per unit. Then scale by the requested number.",
+            (n, r) => {
+              const count = 4 + r, rate = n + 2, target = 7 + r * 2;
+              return question(`${count} notebooks cost $${count * rate}. At the same rate, what do ${target} notebooks cost in dollars?`, rate * target, [
+                `Find the cost of one notebook: ${count * rate} ÷ ${count} = $${rate}.`,
+                `Multiply by ${target}: $${rate * target}.`
+              ]);
+            }),
+          skill("Percent of a Number", "Percent means out of 100. Change the percent to a fraction or decimal and multiply.",
+            (n, r) => {
+              const percent = [15, 35, 65, 125][r], total = 20 * (n + 3);
+              const answer = percent * total / 100;
+              return question(`What is ${percent}% of ${total}?`, answer, [
+                `${percent}% means ${percent}/100.`,
+                `Multiply ${total} × ${percent}/100 to get ${answer}.`
+              ]);
+            }),
+          skill("Reverse Percent Changes", "The final amount equals the original amount times a multiplier. Divide by that multiplier to work backward.",
+            (n, r) => {
+              const discount = [10, 25, 35, 45][r], original = 20 * (n + 5);
+              const paid = 100 - discount, sale = original * paid / 100;
+              return question(`After a ${discount}% discount, an item costs $${sale}. Find its original price in dollars.`, original, [
+                `A ${discount}% discount leaves ${paid}% of the original price.`,
+                `Write final price = original price × ${paid / 100}.`,
+                `Divide ${sale} by ${paid / 100} to get $${original}.`
+              ]);
+            }),
+          skill("Linear Equations", "Undo the operations around the unknown in reverse order. Apply each step to both sides.",
+            (n, r) => {
+              const x = n - 9, a = 3 + r, b = 4 + r * 2;
+              return question(`Solve for x: ${a}x + ${b} = ${a * x + b}.`, x, [
+                `Subtract ${b} from both sides to get ${a}x = ${a * x}.`,
+                `Divide both sides by ${a} to get x = ${x}.`,
+                `Check: ${a} × (${x}) + ${b} = ${a * x + b}.`
+              ]);
+            })
         ]
       },
       {
-        name: "Counting Forest", subject: "Counting", icon: "✦", color: "#86ffd5",
-        chapters: [
-          {
-            title: "The Multiplication Principle",
-            goal: "Count outcomes by multiplying the number of choices at each step.",
-            example: "With 4 shirts and 3 pairs of pants, each shirt makes 3 outfits. That gives 4 × 3 = 12 outfits.",
-            problems: [
-              () => {
-                const a = random(3, 9), b = random(4, 10);
-                return problem(`Choose one of ${a} shirts and one of ${b} pairs of pants. How many outfits can you make?`, a * b,
-                  [a + b, a * b - a, a * b + 1],
-                  "How many pairs of pants can go with each shirt?",
-                  `Each of the ${a} shirts has ${b} matches, so there are ${a} × ${b} = ${a * b} outfits.`);
-              },
-              () => {
-                const a = random(2, 6), b = random(3, 7), c = random(2, 5);
-                return problem(`A lunch includes one of ${a} sandwiches, one of ${b} sides, and one of ${c} drinks. How many lunches are possible?`, a * b * c,
-                  [a + b + c, a * b, a * b * c + c],
-                  "Include the number of choices for all three parts.",
-                  `${a} × ${b} × ${c} = ${a * b * c}.`);
-              }
-            ]
-          },
-          {
-            title: "Order Matters",
-            goal: "Distinguish ordered selections from groups whose order does not matter.",
-            example: "5 students can fill two different roles in 5 × 4 = 20 ways. For a two-person team, divide by 2 to get 10.",
-            problems: [
-              () => {
-                const n = random(5, 16), ordered = n * (n - 1);
-                return problem(`How many different two-person teams can you choose from ${n} students?`, ordered / 2,
-                  [ordered, ordered / 2 + 1, n],
-                  "A team appears twice when you list members in order.",
-                  `There are ${n} × ${n - 1} = ${ordered} ordered pairs. Divide by 2 to get ${ordered / 2} teams.`);
-              },
-              () => {
-                const n = random(5, 16), answer = n * (n - 1);
-                return problem(`How many ways can ${n} students fill the roles of captain and deputy, with different people in the roles?`, answer,
-                  [answer / 2, n * n, answer - 1],
-                  "The two roles are different, and the captain cannot also be deputy.",
-                  `There are ${n} choices for captain and ${n - 1} choices for deputy. Multiply to get ${answer}.`);
-              }
-            ]
-          },
-          {
-            title: "Count the Complement",
-            goal: "Count a wanted set by subtracting unwanted outcomes from all outcomes.",
-            example: "Four coin flips produce 2⁴ = 16 sequences. Only TTTT has zero heads. So 15 sequences have at least one head.",
-            problems: [
-              () => {
-                const n = random(4, 9), total = 2 ** n;
-                return problem(`A coin is flipped ${n} times. How many ordered sequences contain at least one head?`, total - 1,
-                  [total, total / 2, total - 2],
-                  "How many sequences contain zero heads?",
-                  `There are 2^${n} = ${total} sequences. Subtract the single all-tails sequence to get ${total - 1}.`);
-              },
-              () => {
-                const n = random(2, 5), sides = random(3, 7);
-                const total = sides ** n, none = (sides - 1) ** n;
-                return problem(`Each of ${n} slots can contain any digit from 1 through ${sides}. How many codes contain at least one 1?`, total - none,
-                  [total, none, total - 1],
-                  `There are ${sides - 1} choices per slot if you forbid the digit 1.`,
-                  `All codes: ${sides}^${n} = ${total}. Codes with no 1: ${sides - 1}^${n} = ${none}. Subtract to get ${total - none}.`);
-              }
-            ]
-          }
+        name: "Counting Forest",
+        icon: "❋",
+        color: "#90efbb",
+        foe: " Moss Mimic",
+        units: [
+          skill("Multiplication Principle", "If every first choice can be paired with every second choice, multiply the counts.",
+            (n, r) => {
+              const a = 3 + n % 7 + r, b = 2 + n % 5;
+              return question(`Choose one of ${a} hats and one of ${b} capes. How many outfits can you make?`, a * b, [
+                `Each hat can be paired with ${b} capes.`,
+                `There are ${a} hats, so there are ${a} × ${b} = ${a * b} outfits.`
+              ]);
+            }),
+          skill("Codes With Repetition", "With repetition allowed, each position has the same set of choices.",
+            (n, r) => {
+              const symbols = 3 + n % 6, slots = 2 + r;
+              return question(`A code uses ${slots} symbols. Each position has ${symbols} choices, and repeats are allowed. How many codes are possible?`, symbols ** slots, [
+                `Every one of the ${slots} positions has ${symbols} choices.`,
+                `Multiply ${symbols} by itself ${slots} times: ${symbols}^${slots} = ${symbols ** slots}.`
+              ]);
+            }),
+          skill("Codes Without Repetition", "Used symbols are unavailable. The number of choices drops by one at each position.",
+            (n, r) => {
+              const slots = 2 + r, size = slots + 2 + n % 5;
+              const factors = Array.from({ length: slots }, (_, i) => size - i);
+              const total = factors.reduce((a, b) => a * b, 1);
+              return question(`A ${slots}-position code is made from ${size} distinct symbols. No symbol repeats. How many codes are possible?`, total, [
+                `The first position has ${size} choices. Each later position has one fewer.`,
+                `${factors.join(" × ")} = ${total}.`
+              ]);
+            }),
+          skill("Distinct Roles", "When roles are different, swapping two people changes the assignment.",
+            (n, r) => {
+              const people = n + 5 + r;
+              return question(`Choose a captain and a deputy from ${people} students. The roles must go to different students. How many assignments are possible?`, people * (people - 1), [
+                `Choose the captain in ${people} ways.`,
+                `Choose the deputy from the ${people - 1} remaining students.`,
+                `Multiply to get ${people * (people - 1)} assignments.`
+              ]);
+            }),
+          skill("Unordered Teams", "Each set of people can be listed in several orders. Divide the ordered count by the number of orders per team.",
+            (n, r) => {
+              const size = 2 + r, people = size + 4 + n % 6;
+              const orderings = Array.from({ length: size }, (_, i) => people - i);
+              return question(`How many ${size}-person teams can be chosen from ${people} students?`, choose(people, size), [
+                `Count ordered selections with ${orderings.join(" × ")}.`,
+                `Each team appears in ${size}! = ${factorial(size)} orders.`,
+                `Divide by ${factorial(size)} to get ${choose(people, size)} teams.`
+              ]);
+            }),
+          skill("Arrangements & Blocks", "Treat items that must stay together as one block. Then count the orders inside that block.",
+            (n, r) => {
+              const books = 4 + r + n % 3, block = 2 + r % 2;
+              const objects = books - block + 1;
+              const total = factorial(objects) * factorial(block);
+              return question(`Arrange ${books} different books in a row. A specified group of ${block} books must stay together. How many arrangements are possible?`, total, [
+                `Treat those ${block} books as one object, giving ${objects} objects to arrange.`,
+                `Arrange the objects in ${objects}! ways and the books inside the block in ${block}! ways.`,
+                `Multiply ${factorial(objects)} × ${factorial(block)} = ${total}.`
+              ]);
+            }),
+          skill("Counting the Complement", "Count every possible outcome, then subtract the ones that fail the condition.",
+            (n, r) => {
+              const slots = 3 + r, symbols = 3 + n % 4;
+              const answer = symbols ** slots - (symbols - 1) ** slots;
+              return question(`Make a ${slots}-position code from digits 1 through ${symbols}, with repetition allowed. How many codes contain at least one 1?`, answer, [
+                `There are ${symbols}^${slots} = ${symbols ** slots} unrestricted codes.`,
+                `Without digit 1, each position has ${symbols - 1} choices, giving ${(symbols - 1) ** slots} codes.`,
+                `Subtract the unwanted codes to get ${answer}.`
+              ]);
+            }),
+          skill("Exactly k Heads", "Choose which positions contain heads. All the other positions have to be tails.",
+            (n, r) => {
+              const flips = 5 + r + n % 4, heads = 1 + r;
+              return question(`A coin is flipped ${flips} times. How many ordered sequences have exactly ${heads} ${heads === 1 ? "head" : "heads"}?`, choose(flips, heads), [
+                `Choose ${heads} of the ${flips} positions for heads.`,
+                "Fill all remaining positions with tails. Each choice gives exactly one sequence.",
+                `There are ${choose(flips, heads)} choices.`
+              ]);
+            }),
+          skill("Probability With Dice", "For fair dice, probability equals the number of favorable ordered outcomes divided by the number of all ordered outcomes.",
+            (n, r) => {
+              const rolls = 2 + r + n % 2;
+              const answer = 6 ** rolls - 5 ** rolls;
+              return question(`Roll a fair six-sided die ${rolls} times. The probability of at least one 6 is k/${6 ** rolls}. Find k.`, answer, [
+                `Every roll has 6 possible results, giving ${6 ** rolls} ordered outcomes.`,
+                `Each roll has 5 non-six results, so ${5 ** rolls} outcomes contain no six.`,
+                `Subtract to get ${answer} favorable outcomes.`
+              ]);
+            }),
+          skill("The Pigeonhole Principle", "To avoid a guaranteed group of a certain size, first fill each category just below that size. One additional item forces the group.",
+            (n, r) => {
+              const colors = 3 + n % 7, target = 2 + r;
+              const safe = colors * (target - 1);
+              return question(`A bag has socks of ${colors} colors, with at least ${target} of each color. How many socks must you draw blindly to guarantee ${target} socks of the same color?`, safe + 1, [
+                `You could draw ${target - 1} socks of each color without succeeding.`,
+                `That could use ${colors} × ${target - 1} = ${safe} socks.`,
+                `One more forces some color to reach ${target}. The answer is ${safe + 1}.`
+              ]);
+            })
         ]
       },
       {
-        name: "Geometry Citadel", subject: "Geometry", icon: "△", color: "#c9acff",
-        chapters: [
-          {
-            title: "Area & Perimeter",
-            goal: "Find the distance around a figure and the space it covers.",
-            example: "A triangle with base 12 and perpendicular height 5 has area 12 × 5 ÷ 2 = 30 square units.",
-            problems: [
-              () => {
-                const a = random(8, 26), b = random(3, 7), answer = 2 * (a + b);
-                return problem(`Find the perimeter of a rectangle with length ${a} and width ${b}.`, answer,
-                  [a + b, a * b, answer + 4],
-                  "Add the lengths of all four sides.",
-                  `${a} + ${b} + ${a} + ${b} = ${answer} units.`);
-              },
-              () => {
-                const base = random(8, 26), height = 2 * random(3, 9), answer = base * height / 2;
-                return problem(`A triangle has base ${base} and perpendicular height ${height}. Find its area.`, answer,
-                  [base * height, base + height, answer + 2],
-                  "A triangle has half the area of a parallelogram with the same base and height.",
-                  `${base} × ${height} ÷ 2 = ${answer} square units.`);
-              }
-            ]
-          },
-          {
-            title: "Right Triangles",
-            goal: "Use the Pythagorean theorem to find a missing leg or hypotenuse.",
-            example: "If the hypotenuse is 13 and one leg is 5, the other leg is √(13² − 5²) = √144 = 12.",
-            problems: [
-              () => {
-                const scale = random(2, 12), a = 3 * scale, b = 4 * scale, c = 5 * scale;
-                return problem(`A right triangle has legs ${a} and ${b}. Find its hypotenuse.`, c,
-                  [a + b, b, c + 1],
-                  "Add the squared legs, then take the square root.",
-                  `√(${a}² + ${b}²) = √${c ** 2} = ${c}.`);
-              },
-              () => {
-                const scale = random(2, 10), a = 5 * scale, b = 12 * scale, c = 13 * scale;
-                return problem(`A right triangle has hypotenuse ${c} and one leg ${a}. Find the other leg.`, b,
-                  [c - a, c, a + c],
-                  "Subtract the square of the given leg from the hypotenuse squared.",
-                  `√(${c}² − ${a}²) = √${b ** 2} = ${b}.`);
-              }
-            ]
-          },
-          {
-            title: "Circles on the Coordinate Plane",
-            goal: "Read the center and radius from a circle equation, then use πr² to find area.",
-            example: "The sliding 6-foot ladder gives (x − 3√2)² + (y + 3√2)² = 36. The full graph has radius 6 and area 36π. The physical ladder motion traces an arc.",
-            problems: [
-              () => {
-                const h = random(1, 12), k = random(1, 12), r = random(3, 12);
-                return problem(`What is the center of (x − ${h})² + (y + ${k})² = ${r ** 2}?`, `(${h}, −${k})`,
-                  [`(−${h}, ${k})`, `(${h}, ${k})`, `(−${h}, −${k})`],
-                  "What x and y values make both parentheses zero?",
-                  `x − ${h} = 0 gives x = ${h}. y + ${k} = 0 gives y = −${k}.`);
-              },
-              () => {
-                const h = random(1, 12), k = random(1, 12), r = random(3, 12);
-                return problem(`What area is enclosed by (x − ${h})² + (y + ${k})² = ${r ** 2}?`, `${r ** 2}π`,
-                  [`${r}π`, `${2 * r}π`, `${r ** 4}π`],
-                  "The right side equals r². The area formula is πr².",
-                  `The radius is ${r}. Multiply ${r}² by π to get ${r ** 2}π square units.`);
-              }
-            ]
-          }
+        name: "Geometry Citadel",
+        icon: "▲",
+        color: "#c9b3ff",
+        foe: " Prism Drake",
+        units: [
+          skill("Rectangle Perimeter", "Perimeter is the distance around a figure. A rectangle has two lengths and two widths.",
+            (n, r) => {
+              const a = 8 + n + r * 3, b = 3 + r + n % 5;
+              return question(`Find the perimeter of a rectangle with sides ${a} and ${b}.`, 2 * (a + b), [
+                `Add one length and one width: ${a} + ${b} = ${a + b}.`,
+                `Double that sum to include all four sides: ${2 * (a + b)}.`
+              ]);
+            }),
+          skill("Area & Missing Sides", "Rectangle area is length times width. Divide the area by a known side to recover the missing side.",
+            (n, r) => {
+              const a = 7 + n, b = 3 + r + n % 4, area = a * b;
+              return question(`A rectangle has area ${area} and width ${b}. Find its length.`, a, [
+                `Write area = length × width, so ${area} = length × ${b}.`,
+                `Divide both sides by ${b}. The length is ${a}.`
+              ]);
+            }),
+          skill("Triangle Area", "A triangle has half the area of a parallelogram with the same base and perpendicular height.",
+            (n, r) => {
+              const b = n + 8, h = 2 * (3 + r + n % 4);
+              return question(`A triangle has base ${b} and perpendicular height ${h}. Find its area.`, b * h / 2, [
+                `Use the perpendicular height ${h} with base ${b}.`,
+                `Multiply base by height, then halve: ${b} × ${h} ÷ 2 = ${b * h / 2}.`
+              ]);
+            }),
+          skill("Trapezoid Area", "Multiply the average of the parallel sides by the perpendicular distance between them.",
+            (n, r) => {
+              const a = 4 + n, b = a + r + 3, h = 4 + 2 * r;
+              return question(`A trapezoid has parallel sides ${a} and ${b} and height ${h}. Find its area.`, (a + b) * h / 2, [
+                `Add the parallel sides to get ${a + b}.`,
+                `Take half that sum and multiply by ${h}: ${a + b} × ${h} ÷ 2 = ${(a + b) * h / 2}.`
+              ]);
+            }),
+          skill("Polygon Angles", "Draw diagonals from one vertex of a convex polygon to split it into two fewer triangles than it has sides.",
+            (n, r) => {
+              const sides = 5 + r + n % 6;
+              return question(`Find the sum of the interior angles of a convex ${sides}-sided polygon, in degrees.`, (sides - 2) * 180, [
+                `The diagonals from one vertex create ${sides - 2} triangles.`,
+                `Each triangle contributes 180°, so the sum is ${sides - 2} × 180° = ${(sides - 2) * 180}°.`
+              ]);
+            }),
+          skill("The Pythagorean Theorem", "For a right triangle, the squares of the legs add to the square of the hypotenuse.",
+            (n, r) => {
+              const scale = 2 + n % 5;
+              const [a, b, c] = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25]][r]
+                .map(side => side * scale);
+              return question(`A right triangle has hypotenuse ${c} and one leg ${a}. Find the other leg.`, b, [
+                `Set up ${a}² + x² = ${c}².`,
+                `Subtract ${a}² to get x² = ${c * c - a * a}.`,
+                `Take the positive square root because x is a length. The missing leg is ${b}.`
+              ]);
+            }),
+          skill("Similar Figures", "Corresponding lengths of similar figures follow the same scale factor. Their areas scale by the square of that factor.",
+            (n, r) => {
+              const factor = 2 + r, area = 12 + n;
+              return question(`A triangle of area ${area} is enlarged so every side becomes ${factor} times as long. Find the new area.`, area * factor ** 2, [
+                `Both the base and the height scale by ${factor}.`,
+                `The area therefore scales by ${factor} × ${factor} = ${factor ** 2}.`,
+                `Multiply ${area} × ${factor ** 2} = ${area * factor ** 2}.`
+              ]);
+            }),
+          skill("Coordinate Distance", "Use horizontal and vertical differences as the legs of a right triangle.",
+            (n, r) => {
+              const x = n - 11, y = r - 5;
+              const scale = r + 1;
+              const a = 3 * scale, b = 4 * scale;
+              return question(`Find the distance from (${x}, ${y}) to (${x + a}, ${y + b}).`, 5 * scale, [
+                `The horizontal change is ${a} and the vertical change is ${b}.`,
+                `The distance is √(${a}² + ${b}²) = √${a * a + b * b} = ${5 * scale}.`
+              ]);
+            }),
+          skill("Circle Equations", "In (x − h)² + (y − k)² = r², the center is (h, k). The equation measures squared distance from that center.",
+            (n, r) => {
+              const h = n + 1, k = r + 2, radius = 3 + r + n % 6;
+              return question(`The circle (x − ${h})² + (y + ${k})² = ${radius ** 2} encloses an area of aπ. Find a.`, radius ** 2, [
+                `The center is (${h}, −${k}). Those coordinates make both squared expressions zero.`,
+                `The equation sets squared distance equal to ${radius ** 2}, so the radius is ${radius}.`,
+                `Area = πr² = ${radius ** 2}π. The requested coefficient is ${radius ** 2}.`
+              ]);
+            }),
+          skill("The Sliding Ladder", "A ladder’s fixed length links two changing distances through the Pythagorean theorem. The full graph of that equation is a circle.",
+            (n, r) => {
+              const half = 2 + r + n % 8, length = 2 * half;
+              return question(`A ${length}-ft ladder starts at 45°. Let x measure how far its base moves toward the wall and y how far its top moves up. The full graph of their equation encloses aπ square feet. Find a.`, length ** 2, [
+                `At 45°, the height and distance from the wall are both ${length}/√2 = ${half}√2.`,
+                `After moving, the squared legs give (${half}√2 − x)² + (${half}√2 + y)² = ${length ** 2}.`,
+                `The full graph has center (${half}√2, −${half}√2) and radius ${length}. Its area is ${length ** 2}π.`,
+                "The physically possible ladder positions trace an arc. The problem asks for the area enclosed by the full equation."
+              ]);
+            })
         ]
       }
     ];
 
+    const levelsPerRealm = realms[0].units.length * ranks.length;
     const $ = id => document.getElementById(id);
-    const storageKey = "math-quest-academy-v1";
-    const perRealm = 10;
-    const placementLength = realms.length * perRealm;
-    const checkpointLength = 4;
+    const app = $("app");
 
-    let state = {
-      xp: 0,
-      diagnostic: [],
-      pending: null,
-      cleared: realms.map(realm => realm.chapters.map(() => false)),
-      mistakes: []
-    };
+    let selectedRealm = 0;
+    let battle = null;
+    let state = load();
 
-    try {
-      const saved = JSON.parse(localStorage.getItem(storageKey));
-      if (saved && Array.isArray(saved.diagnostic) && Array.isArray(saved.cleared) &&
-          Array.isArray(saved.mistakes) && Number.isFinite(saved.xp)) {
-        state = saved;
+    function load() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        if (saved?.version === 1) return saved;
+      } catch {
+        $("notice").textContent = "Saved progress could not be loaded.";
       }
-    } catch {
-      $("notice").textContent = "Saved progress could not be loaded.";
+
+      return {
+        version: 1,
+        xp: 0,
+        gold: 5,
+        potions: 1,
+        diagnostic: [],
+        pending: null,
+        cleared: realms.map(() => []),
+        journal: []
+      };
     }
 
     function save() {
       try {
         localStorage.setItem(storageKey, JSON.stringify(state));
       } catch {
-        $("notice").textContent = "Browser storage is unavailable. Progress lasts for this session.";
+        $("notice").textContent = "Browser storage is unavailable. Progress stays in this session.";
       }
-      $("xp").textContent = `${state.xp} XP`;
+      updateInventory();
     }
 
-    function random(min, max) {
-      return min + Math.floor(Math.random() * (max - min + 1));
-    }
-
-    function shuffle(items) {
-      const copy = [...items];
-      for (let i = copy.length - 1; i > 0; i -= 1) {
-        const j = random(0, i);
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    function problem(prompt, answer, distractors, hint, solution) {
-      const correct = String(answer);
-      const choices = [...new Set([correct, ...distractors.map(String)])];
-      for (let offset = 1; choices.length < 4; offset += 1) {
-        const alternative = String(Number(correct) + offset);
-        if (!choices.includes(alternative)) choices.push(alternative);
-      }
-      return { prompt, correct, choices: shuffle(choices), hint, solution };
-    }
-
-    function generate(realm, level, recent = []) {
-      const families = realms[realm].chapters[level].problems;
-      let next;
-      for (let attempt = 0; attempt < 16; attempt += 1) {
-        next = families[random(0, families.length - 1)]();
-        if (!recent.includes(next.prompt)) break;
-      }
-      return next;
+    function updateInventory() {
+      $("inventory").textContent = `${state.xp} XP · ${state.gold} gold · ${state.potions} potions`;
     }
 
     function el(tag, text, className) {
@@ -467,398 +585,487 @@
     }
 
     function button(label, action, primary = false) {
-      const node = el("button", label, primary ? "primary" : undefined);
-      node.type = "button";
-      node.addEventListener("click", action);
-      return node;
+      const control = el("button", label, primary ? "primary" : undefined);
+      control.type = "button";
+      control.addEventListener("click", action);
+      return control;
     }
 
-    function openScreen(label, title) {
-      $("map").hidden = true;
-      const screen = $("screen");
-      const heading = el("h2", title);
+    function actions(...controls) {
+      const row = el("div", undefined, "row");
+      row.append(...controls);
+      return row;
+    }
+
+    function screen(label, title) {
+      const panel = el("section", undefined, "panel");
+      const heading = el("h1", title);
       heading.tabIndex = -1;
-      screen.hidden = false;
-      screen.replaceChildren(el("p", label, "eyebrow"), heading);
-      heading.focus();
-      return screen;
+      if (label) panel.append(el("p", label, "eyebrow"));
+      panel.append(heading);
+      app.replaceChildren(panel);
+      heading.focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+      return panel;
     }
 
-    function note(heading, message) {
-      const box = el("div", undefined, "note");
-      box.append(el("h3", heading), el("p", message));
-      return box;
+    function explanation(title, q, className = "") {
+      const card = el("div", undefined, "note");
+      if (className) card.classList.add(className);
+      const list = el("ol");
+      q.steps.forEach(step => list.append(el("li", step)));
+      card.append(el("h3", title), el("p", q.prompt), list);
+      return card;
     }
 
-    function meter(value, max, label) {
-      const progress = el("progress");
-      progress.max = max;
-      progress.value = value;
-      progress.setAttribute("aria-label", label);
-      return progress;
+    function unitAt(realm, level) {
+      return realms[realm].units[Math.floor(level / ranks.length)];
     }
 
-    function finishedPlacement() {
-      return state.diagnostic.length >= placementLength;
+    function rankAt(level) {
+      return level % ranks.length;
     }
 
-    function questionsFor(realm) {
+    function makeQuestion(realm, level, recent = []) {
+      const unit = unitAt(realm, level);
+      const start = Math.floor(Math.random() * 30);
+      let q;
+
+      for (let offset = 0; offset < 30; offset += 1) {
+        q = unit.create(3 + (start + offset) % 30, rankAt(level));
+        if (!recent.includes(q.prompt)) return q;
+      }
+
+      return q;
+    }
+
+    function placed() {
+      return state.diagnostic.length === diagnosticLength;
+    }
+
+    function answersFor(realm) {
       return state.diagnostic.filter(entry => entry.realm === realm);
     }
 
-    // Start each realm in the middle. Only that realm's answers change its difficulty.
-    function difficultyFor(realm) {
-      return questionsFor(realm).reduce((level, entry) => {
-        return Math.max(0, Math.min(2, level + (entry.passed ? 1 : -1)));
-      }, 1);
+    function changeDifficulty(level, passed) {
+      return Math.max(0, Math.min(levelsPerRealm - 1, level + (passed ? 4 : -4)));
     }
 
-    // Recommend Chapter I until there is evidence for Chapter II, and vice versa.
-    function placementFor(realm) {
-      const answers = questionsFor(realm);
-      const hardSuccesses = answers.filter(entry => entry.level === 2 && entry.passed).length;
-      const middleOrHardSuccesses = answers.filter(entry => entry.level >= 1 && entry.passed).length;
-      if (hardSuccesses >= 3) return 2;
-      if (middleOrHardSuccesses >= 2) return 1;
-      return 0;
+    function diagnosticLevel(realm) {
+      return answersFor(realm).reduce(
+        (level, entry) => changeDifficulty(level, entry.passed),
+        8
+      );
+    }
+
+    function recommendation(realm) {
+      const entries = answersFor(realm).slice(-4);
+      if (entries.length === 0) return 0;
+      const candidates = entries
+        .map(entry => changeDifficulty(entry.level, entry.passed))
+        .sort((a, b) => a - b);
+      return candidates[Math.floor((candidates.length - 1) / 2)];
+    }
+
+    function isCleared(realm, level) {
+      return state.cleared[realm].includes(level);
     }
 
     function unlocked(realm, level) {
-      if (!finishedPlacement()) return false;
-      return level <= placementFor(realm) || state.cleared[realm][level - 1];
+      return placed() && (level <= recommendation(realm) || isCleared(realm, level - 1));
     }
 
     function showMap() {
-      $("screen").hidden = true;
-      $("map").hidden = false;
-      $("xp").textContent = `${state.xp} XP`;
-      const done = finishedPlacement();
-      const quest = $("questButton");
-      quest.textContent = done ? "View placement report" :
-        state.diagnostic.length ? "Resume placement quest" : "Start placement quest";
-      quest.onclick = done ? showReport : showDiagnostic;
+      updateInventory();
+      document.documentElement.style.setProperty("--realm", realms[selectedRealm].color);
 
-      const worlds = $("worlds");
-      worlds.replaceChildren();
+      const hero = el("section", undefined, "landscape");
+      const intro = el("div", undefined, "hero-copy");
+      intro.append(
+        el("h1", "Math Quest RPG"),
+        el("p", "Explore the realms, study magic powered by math, and defeat their guardians."),
+        button(
+          placed() ? "Placement report" : state.diagnostic.length ? "Resume placement quest" : "Start placement quest",
+          placed() ? showReport : showDiagnostic,
+          true
+        )
+      );
+      hero.append(intro);
 
-      realms.forEach((realm, realmIndex) => {
-        const card = el("article", undefined, "world");
-        card.style.setProperty("--world", realm.color);
-
-        const heading = el("div", undefined, "world-head");
-        const sigil = el("span", realm.icon, "sigil");
-        sigil.setAttribute("aria-hidden", "true");
-        heading.append(sigil, el("h3", realm.name));
-        card.append(heading, el("p", realm.subject));
-
-        realm.chapters.forEach((chapter, level) => {
-          const preview = el("details");
-          const cleared = state.cleared[realmIndex][level];
-          const recommended = done && placementFor(realmIndex) === level && !cleared;
-          const suffix = cleared ? " · Cleared" : recommended ? " · Start here" : "";
-          preview.append(
-            el("summary", `Chapter ${level + 1} · ${chapter.title}${suffix}`),
-            el("p", chapter.goal),
-            note("Worked example", chapter.example)
-          );
-          if (unlocked(realmIndex, level)) {
-            preview.append(button(cleared ? "Replay chapter" : "Enter chapter",
-              () => showLesson(realmIndex, level), recommended));
-          } else {
-            preview.append(el("p", done ? "Clear the previous chapter to enter." : "Complete placement to enter."));
-          }
-          preview.open = recommended;
-          card.append(preview);
+      const trail = el("nav", undefined, "map-trail");
+      trail.setAttribute("aria-label", "Choose a realm");
+      realms.forEach((realm, index) => {
+        const control = button(realm.name, () => {
+          selectedRealm = index;
+          showMap();
+          app.querySelectorAll(".map-trail button")[index].focus();
         });
-
-        worlds.append(card);
+        const icon = el("span", realm.icon, "trail-active");
+        icon.setAttribute("aria-hidden", "true");
+        control.prepend(icon);
+        control.setAttribute("aria-pressed", String(index === selectedRealm));
+        trail.append(control);
       });
 
-      drawWorld();
+      const curriculum = el("section", undefined, "panel");
+      const realm = realms[selectedRealm];
+      curriculum.append(
+        el("h2", `${realm.name} curriculum`),
+        el("p", "Open any unit to preview its explanation and worked example. You can do this before placement.")
+      );
+
+      realm.units.forEach((unit, unitIndex) => {
+        const first = unitIndex * ranks.length;
+        const details = el("details", undefined, "unit");
+        const recommended = placed() && unitAt(selectedRealm, recommendation(selectedRealm)) === unit;
+        details.open = recommended;
+        details.append(
+          el("summary", `${unit.title} · Levels ${first + 1}–${first + ranks.length}`),
+          el("p", unit.rule),
+          explanation("Worked example", unit.create(2, 0))
+        );
+
+        const grid = el("div", undefined, "grid");
+        ranks.forEach((rank, offset) => {
+          const level = first + offset;
+          const status = isCleared(selectedRealm, level)
+            ? "Cleared"
+            : recommended && level === recommendation(selectedRealm)
+              ? "Recommended start"
+              : unlocked(selectedRealm, level)
+                ? "Ready to play"
+                : "Preview";
+          const control = button(`Level ${level + 1} · ${rank}`, () => showLesson(selectedRealm, level));
+          control.classList.add("level");
+          control.append(el("small", status));
+          grid.append(control);
+        });
+
+        details.append(grid);
+        curriculum.append(details);
+      });
+
+      app.replaceChildren(hero, trail, curriculum);
     }
 
-    function answerGrid(parent, question, onSelect) {
-      const grid = el("div", undefined, "answers");
-      const controls = [];
-      question.choices.forEach(option => {
-        const control = button(option, () => {
-          controls.forEach(choice => choice.setAttribute("aria-pressed", String(choice === control)));
-          onSelect(option);
-        });
-        control.setAttribute("aria-pressed", "false");
-        controls.push(control);
-        grid.append(control);
+    function answerForm(onSubmit, actionLabel = "Submit answer") {
+      const form = el("form", undefined, "row");
+      const label = el("label", "Your answer");
+      label.htmlFor = "answerInput";
+      const input = el("input");
+      input.id = "answerInput";
+      input.type = "text";
+      input.inputMode = "text";
+      input.autocomplete = "off";
+      input.required = true;
+
+      const submit = el("button", actionLabel, "primary");
+      submit.type = "submit";
+
+      const error = el("p");
+      error.setAttribute("role", "status");
+      form.append(label, input, submit, error);
+
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        const value = input.value.trim().replace(/^−/, "-");
+        if (!/^[+-]?\d+$/.test(value) || !Number.isSafeInteger(Number(value))) {
+          error.textContent = "Enter a whole number, such as 12 or -4.";
+          return;
+        }
+
+        input.disabled = true;
+        submit.disabled = true;
+        onSubmit(Number(value));
       });
-      parent.append(grid);
-      return controls;
+
+      return form;
+    }
+
+    function meter(value, max, label) {
+      const bar = el("progress");
+      bar.value = value;
+      bar.max = max;
+      bar.setAttribute("aria-label", label);
+      return bar;
     }
 
     function showDiagnostic() {
-      if (finishedPlacement()) {
+      if (placed()) {
         showReport();
         return;
       }
 
       const index = state.diagnostic.length;
       const realm = index % realms.length;
-      const level = difficultyFor(realm);
+      const level = diagnosticLevel(realm);
 
       if (!state.pending) {
-        const recent = questionsFor(realm).map(entry => entry.question.prompt);
-        state.pending = generate(realm, level, recent);
+        const recent = answersFor(realm).map(entry => entry.q.prompt);
+        state.pending = makeQuestion(realm, level, recent);
         save();
       }
 
-      const question = state.pending;
-      const screen = openScreen(`Placement quest · ${index + 1} of ${placementLength}`, question.prompt);
-      screen.append(meter(index, placementLength, "Placement questions submitted"));
-      let selected = null;
+      const q = state.pending;
+      const panel = screen(`Placement quest · ${index + 1} of ${diagnosticLength}`, realms[realm].name);
+      panel.append(
+        meter(index, diagnosticLength, "Placement progress"),
+        el("p", q.prompt, "question")
+      );
 
       function submit(answer) {
         if (state.diagnostic.length !== index) return;
-        state.diagnostic.push({ realm, level, question, answer, passed: answer === question.correct });
+        state.diagnostic.push({ realm, level, q, answer, passed: answer === q.answer });
         state.pending = null;
         save();
         showDiagnostic();
       }
 
-      const next = button(index === placementLength - 1 ? "See my placement" : "Next question",
-        () => submit(selected), true);
-      next.disabled = true;
-      answerGrid(screen, question, option => {
-        selected = option;
-        next.disabled = false;
-      });
-      const actions = el("div", undefined, "actions");
-      actions.append(next, button("I’m not sure", () => submit(null)));
-      screen.append(actions);
+      panel.append(answerForm(submit), button("I’m not sure", () => submit(null)));
     }
 
     function showReport() {
-      const screen = openScreen("Placement complete", "Your starting chapters");
-      screen.append(el("p", "Each realm has its own starting chapter. You can also visit earlier chapters to review."));
-      const grid = el("div", undefined, "worlds");
+      const panel = screen("Placement complete", "Choose your starting realm");
+      const grid = el("div", undefined, "grid");
+
       realms.forEach((realm, index) => {
-        const level = placementFor(index);
-        const tile = note(realm.name, `Chapter ${level + 1} · ${realm.chapters[level].title}`);
-        tile.append(button("Open lesson", () => showLesson(index, level), true));
+        const level = recommendation(index);
+        const tile = el("article", undefined, "tile");
+        tile.append(
+          el("h3", realm.name),
+          el("p", `Level ${level + 1} · ${unitAt(index, level).title} · ${ranks[rankAt(level)]}`),
+          button("Open recommended lesson", () => showLesson(index, level), true)
+        );
         grid.append(tile);
       });
-      screen.append(grid);
+
+      panel.append(grid);
     }
 
     function showLesson(realm, level) {
-      const chapter = realms[realm].chapters[level];
-      const screen = openScreen(`${realms[realm].name} · Chapter ${level + 1}`, chapter.title);
-      screen.append(
-        el("p", chapter.goal),
-        note("Worked example", chapter.example),
-        el("p", "Train with hints and explanations. When you’re ready, pass the checkpoint with at least 3 correct answers out of 4."),
-        button("Enter training", () => showTraining(realm, level, []), true)
+      selectedRealm = realm;
+      const unit = unitAt(realm, level);
+      const panel = screen(
+        `${realms[realm].name} · Level ${level + 1} · ${ranks[rankAt(level)]}`,
+        unit.title
       );
+
+      panel.append(el("p", unit.rule), explanation("Worked example", unit.create(2, rankAt(level))));
+
+      if (unlocked(realm, level)) {
+        panel.append(
+          el("p", "Train with hints, then face the guardian. Solve four problems before losing all your hearts."),
+          actions(
+            button("Start training", () => showTraining(realm, level), true),
+            button("Fight guardian", () => startBattle(realm, level))
+          )
+        );
+      } else {
+        panel.append(
+          el("p", placed()
+            ? "Clear the previous level to unlock this fight."
+            : "Complete placement to unlock training and battles."),
+          button(placed() ? "World map" : "Go to placement", placed() ? showMap : showDiagnostic)
+        );
+      }
     }
 
-    function addMistake(realm, level, question, answer) {
-      const entry = { realm, level, question, answer };
-      state.mistakes = [
-        entry,
-        ...state.mistakes.filter(item => item.question.prompt !== question.prompt)
-      ].slice(0, 80);
+    function recordMistake(q, answer, source) {
+      state.journal = [
+        { q, answer, source },
+        ...state.journal.filter(entry => entry.q.prompt !== q.prompt)
+      ].slice(0, 100);
     }
 
-    function showTraining(realm, level, recent) {
-      const question = generate(realm, level, recent);
-      const nextRecent = [...recent, question.prompt].slice(-10);
-      const screen = openScreen(`${realms[realm].name} · Training`, question.prompt);
-      let answered = false;
+    function showTraining(realm, level, recent = []) {
+      const unit = unitAt(realm, level);
+      const q = makeQuestion(realm, level, recent);
+      const panel = screen(`${realms[realm].name} · Training`, unit.title);
+      panel.append(el("p", q.prompt, "question"));
+
+      const hint = el("details", undefined, "note");
+      hint.append(el("summary", "Reveal the rule"), el("p", unit.rule));
       let usedHint = false;
+      hint.addEventListener("toggle", () => {
+        if (hint.open) usedHint = true;
+      });
 
-      const controls = answerGrid(screen, question, option => {
-        if (answered) return;
-        answered = true;
-        controls.forEach(control => { control.disabled = true; });
-        hintButton.disabled = true;
+      const result = el("div");
+      result.tabIndex = -1;
+      panel.append(answerForm(answer => {
+        const correct = answer === q.answer;
 
-        const correct = option === question.correct;
-        if (correct) state.xp += usedHint ? 2 : 5;
-        else addMistake(realm, level, question, option);
+        if (correct) {
+          state.xp += usedHint || hint.open ? 1 : 3;
+        } else {
+          recordMistake(q, answer, "Training");
+        }
+
         save();
-
-        const result = note(correct ? "Correct!" : `Correct answer: ${question.correct}`, question.solution);
-        result.classList.add(correct ? "good" : "bad");
-        result.tabIndex = -1;
-        screen.append(result, button("Next training problem", () => showTraining(realm, level, nextRecent), true));
+        result.append(
+          explanation(correct ? "Correct" : `Correct answer: ${q.answer}`, q, correct ? "good" : "bad"),
+          button("Next training problem", () => {
+            showTraining(realm, level, [...recent, q.prompt].slice(-10));
+          }, true)
+        );
         result.focus();
-      });
-
-      const hintButton = button("Reveal hint", () => {
-        usedHint = true;
-        hintButton.disabled = true;
-        const hint = note("Hint", question.hint);
-        hint.tabIndex = -1;
-        screen.append(hint);
-        hint.focus();
-      });
-      const actions = el("div", undefined, "actions");
-      actions.append(hintButton, button("Start checkpoint", () => checkpoint(realm, level, [])));
-      screen.append(actions);
+      }), hint, result, button("Fight guardian", () => startBattle(realm, level)));
     }
 
-    function checkpoint(realm, level, attempt) {
-      if (attempt.length === checkpointLength) {
-        const score = attempt.filter(item => item.passed).length;
-        const passed = score >= 3;
-        const firstClear = passed && !state.cleared[realm][level];
-        if (firstClear) {
-          state.cleared[realm][level] = true;
-          state.xp += 25;
+    function startBattle(realm, level) {
+      if (!unlocked(realm, level)) return;
+
+      battle = {
+        realm,
+        level,
+        hp: startingHP,
+        enemyHP: checkpointLength,
+        recent: [],
+        q: makeQuestion(realm, level),
+        feedback: null
+      };
+      showBattle();
+    }
+
+    function fighter(name, hp, max, monster = false) {
+      const card = el("div", undefined, "fighter");
+      const sprite = el("span", undefined, monster ? "sprite monster" : "sprite");
+      sprite.setAttribute("aria-hidden", "true");
+      card.append(sprite, el("strong", `${name} · ${hp}/${max} HP`), meter(hp, max, name));
+      return card;
+    }
+
+    function showBattle() {
+      const current = battle;
+      const realm = realms[current.realm];
+      const panel = screen(`${realm.name} · Level ${current.level + 1}`, `${realm.foe.trim()} battle`);
+      const arena = el("div", undefined, "arena");
+      arena.append(
+        fighter("You", current.hp, startingHP),
+        fighter(realm.foe.trim(), current.enemyHP, checkpointLength, true)
+      );
+      panel.append(arena);
+
+      if (current.feedback) {
+        const { correct, reward } = current.feedback;
+        const title = correct ? "Your spell hits!" : `The guardian hits back. Answer: ${current.q.answer}`;
+        panel.append(explanation(title, current.q, correct ? "good" : "bad"));
+
+        if (!current.enemyHP) {
+          panel.append(el("h2", "Guardian defeated"), el("p", reward));
+          if (current.level + 1 < levelsPerRealm) {
+            panel.append(button("Open next lesson", () => showLesson(current.realm, current.level + 1), true));
+          } else {
+            panel.append(el("p", `You cleared the final level of ${realm.name}.`));
+          }
+          panel.append(button("World map", showMap));
+          return;
         }
 
-        attempt.filter(item => !item.passed)
-          .forEach(item => addMistake(realm, level, item.question, item.answer));
-        save();
-
-        const screen = openScreen("Checkpoint results", passed ? "Chapter cleared!" : "Keep training");
-        screen.append(el("p", `${score}/${checkpointLength} correct${firstClear ? " · +25 XP" : ""}`));
-        attempt.filter(item => !item.passed).forEach(item => {
-          screen.append(note(item.question.prompt, item.question.solution));
-        });
-
-        const actions = el("div", undefined, "actions");
-        if (passed && level < realms[realm].chapters.length - 1) {
-          actions.append(button("Enter next chapter", () => showLesson(realm, level + 1), true));
+        if (!current.hp) {
+          panel.append(
+            el("h2", "Return to camp"),
+            actions(
+              button("Review the lesson", () => showLesson(current.realm, current.level), true),
+              button("Try the fight again", () => startBattle(current.realm, current.level))
+            )
+          );
+          return;
         }
-        actions.append(button("Back to training", () => showTraining(realm, level, [])), button("World map", showMap));
-        screen.append(actions);
+
+        panel.append(button("Next turn", () => {
+          current.recent.push(current.q.prompt);
+          current.q = makeQuestion(current.realm, current.level, current.recent);
+          current.feedback = null;
+          showBattle();
+        }, true));
         return;
       }
 
-      const question = generate(realm, level, attempt.map(item => item.question.prompt));
-      const screen = openScreen(`Checkpoint · ${attempt.length + 1} of ${checkpointLength}`, question.prompt);
-      let selected = null;
-      let submitted = false;
-      const next = button(attempt.length === checkpointLength - 1 ? "Finish checkpoint" : "Next question", () => {
-        if (submitted || selected === null) return;
-        submitted = true;
-        checkpoint(realm, level, [
-          ...attempt,
-          { question, answer: selected, passed: selected === question.correct }
-        ]);
-      }, true);
-      next.disabled = true;
-      answerGrid(screen, question, option => {
-        selected = option;
-        next.disabled = false;
+      panel.append(el("p", current.q.prompt, "question"), answerForm(answer => {
+        if (battle !== current || current.feedback) return;
+        const correct = answer === current.q.answer;
+        let reward = "";
+
+        if (correct) {
+          current.enemyHP -= 1;
+
+          if (current.enemyHP === 0 && !isCleared(current.realm, current.level)) {
+            state.cleared[current.realm].push(current.level);
+            state.xp += 20;
+            state.gold += 8;
+            reward = "First clear reward: 20 XP and 8 gold.";
+          } else if (current.enemyHP === 0) {
+            reward = "Replay complete.";
+          }
+        } else {
+          current.hp -= 1;
+          recordMistake(current.q, answer, "Battle");
+        }
+
+        current.feedback = { correct, reward };
+        save();
+        showBattle();
+      }, "Cast spell"));
+
+      const potion = button(`Heal +1 HP (${state.potions} potions)`, () => {
+        if (state.potions === 0 || current.hp === startingHP) return;
+        state.potions -= 1;
+        current.hp += 1;
+        save();
+        showBattle();
       });
-      screen.append(next);
+      potion.disabled = state.potions === 0 || current.hp === startingHP;
+      panel.append(potion);
+    }
+
+    function showShop() {
+      const panel = screen("Camp", "Potion shop");
+      const price = 5;
+      const buy = button(`Buy healing potion · ${price} gold`, () => {
+        if (state.gold < price) return;
+        state.gold -= price;
+        state.potions += 1;
+        save();
+        showShop();
+      }, true);
+
+      buy.disabled = state.gold < price;
+      panel.append(el("p", "A potion restores one heart during a guardian fight. Earn gold by clearing a level for the first time."), buy);
+      if (state.gold < price) panel.append(el("p", "You need 5 gold to buy a potion."));
+      if (battle && battle.hp > 0 && battle.enemyHP > 0) {
+        panel.append(button("Return to battle", showBattle));
+      }
     }
 
     function showJournal() {
-      const screen = openScreen("Review", "Quest journal");
-      const placementMisses = finishedPlacement() ? state.diagnostic.filter(item => !item.passed) : [];
-      const entries = [...state.mistakes, ...placementMisses];
+      const panel = screen("Camp", "Quest journal");
+      const diagnosticMisses = placed()
+        ? state.diagnostic.filter(entry => !entry.passed)
+          .map(entry => ({ q: entry.q, answer: entry.answer, source: "Placement" }))
+        : [];
+      const entries = [...state.journal, ...diagnosticMisses];
 
-      if (!entries.length) {
-        screen.append(el("p", "Missed questions and their worked solutions will appear here after placement or practice."));
-      }
+      if (!entries.length) panel.append(el("p", "Missed problems appear here with their full solutions. Placement solutions unlock after the quest."));
 
-      entries.forEach(entry => {
-        const item = el("details");
-        item.append(
-          el("summary", entry.question.prompt),
-          el("p", `Your answer: ${entry.answer ?? "Skipped"}. Correct answer: ${entry.question.correct}.`),
-          el("p", entry.question.solution)
+      entries.forEach(({ q, answer, source }) => {
+        const detail = el("details", undefined, "unit");
+        detail.append(
+          el("summary", `${source} · ${q.prompt}`),
+          el("p", `Your answer: ${answer ?? "Skipped"}. Correct answer: ${q.answer}.`),
+          explanation("How to solve it", q)
         );
-        screen.append(item);
+        panel.append(detail);
       });
-    }
 
-    // Draw the academy scene with Canvas. It scales to the screen and works offline.
-    function drawWorld() {
-      const canvas = $("sky");
-      const rect = canvas.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      const density = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(rect.width * density);
-      canvas.height = Math.round(rect.height * density);
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.scale(canvas.width / 1000, canvas.height / 400);
-
-      const sky = ctx.createLinearGradient(0, 0, 0, 400);
-      sky.addColorStop(0, "#161638");
-      sky.addColorStop(.63, "#364476");
-      sky.addColorStop(1, "#52648b");
-      ctx.fillStyle = sky;
-      ctx.fillRect(0, 0, 1000, 400);
-
-      function polygon(points, color) {
-        ctx.beginPath();
-        points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.fill();
+      if (battle && battle.hp > 0 && battle.enemyHP > 0) {
+        panel.append(button("Return to battle", showBattle));
       }
-
-      function disc(x, y, radius, color) {
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-      }
-
-      for (let i = 0; i < 90; i += 1) {
-        const x = (i * 173 + 13) % 1000;
-        const y = (i * 71 + 17) % 245;
-        disc(x, y, i % 9 === 0 ? 2 : .85, i % 5 === 0 ? "#fff1ca" : "#9eaee0");
-      }
-
-      const moon = ctx.createRadialGradient(800, 102, 16, 800, 102, 140);
-      moon.addColorStop(0, "#a394ff70");
-      moon.addColorStop(1, "#a394ff00");
-      disc(800, 102, 140, moon);
-      disc(800, 102, 43, "#e9d7ff");
-      disc(814, 89, 9, "#cfbdef");
-      disc(784, 114, 5, "#cfbdef");
-
-      polygon([[0,310],[115,184],[230,295],[360,219],[460,297],[600,162],[742,298],[870,193],[1000,265],[1000,400],[0,400]], "#2c3c69");
-      polygon([[0,355],[170,282],[330,338],[509,257],[692,335],[805,254],[1000,332],[1000,400],[0,400]], "#1d2f55");
-      polygon([[0,378],[270,345],[540,378],[760,312],[1000,354],[1000,400],[0,400]], "#152746");
-
-      function tower(x, y, width, height) {
-        ctx.fillStyle = "#141e3f";
-        ctx.fillRect(x, y, width, height);
-        ctx.fillStyle = "#28345e";
-        ctx.fillRect(x + width * .55, y, width * .45, height);
-        polygon([[x - 7, y], [x + width / 2, y - 36], [x + width + 7, y]], "#55478b");
-        for (let row = 0; row < height - 18; row += 24) {
-          ctx.fillStyle = "#ffd997";
-          ctx.fillRect(x + width / 2 - 4, y + 12 + row, 8, 11);
-        }
-      }
-
-      tower(674, 232, 34, 72);
-      tower(718, 194, 49, 105);
-      tower(775, 165, 52, 133);
-      tower(839, 209, 43, 100);
-      tower(891, 242, 34, 68);
-
-      ctx.strokeStyle = "#86ffd5aa";
-      ctx.lineWidth = 2;
-      ctx.setLineDash([6, 9]);
-      ctx.beginPath();
-      ctx.moveTo(485, 367);
-      ctx.quadraticCurveTo(663, 319, 797, 313);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      disc(620, 337, 5, "#86ffd5");
-      disc(797, 313, 7, "#ffd884");
     }
 
     $("mapButton").addEventListener("click", showMap);
+    $("shopButton").addEventListener("click", showShop);
     $("journalButton").addEventListener("click", showJournal);
-    window.addEventListener("resize", drawWorld);
     showMap();
   </script>
 </body>
