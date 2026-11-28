@@ -7,151 +7,146 @@
   <style>
     :root {
       color-scheme: dark;
-      --ink: #faf4e7;
-      --muted: #c3d4dc;
-      --panel: #172b35;
-      --line: #48616b;
-      --mint: #b3ffd5;
-      --gold: #ffdd8c;
-      --danger: #ffb6c2;
+      --ink: #fff8eb;
+      --muted: #c9d5e3;
+      --gold: #ffdc91;
+      --mint: #a6f6ce;
+      --line: #536180;
+      --danger: #ffafba;
     }
 
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       min-height: 100vh;
+      background: radial-gradient(ellipse at 80% 0%, #384369, #101827 65%);
       color: var(--ink);
-      background: radial-gradient(ellipse at top right, #354d5a, transparent 48rem), #0e1924;
       font: 1rem/1.55 system-ui, sans-serif;
     }
 
-    header, main { width: min(920px, calc(100% - 24px)); margin: auto; }
-    header { justify-content: space-between; padding: 16px 0; }
-    header, nav, .row { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
-    main { padding-bottom: 40px; }
-    h1, h2, h3, p { margin: 0 0 .65em; }
-    h1 { font-size: clamp(1.85rem, 6vw, 3.4rem); line-height: 1.08; }
-    h2 { line-height: 1.2; }
+    header, main { width: min(960px, calc(100% - 24px)); margin: auto; }
+    header, nav, .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    header { justify-content: space-between; padding: 13px 0; }
+    main { padding-bottom: 36px; }
+    h1, h2, h3, p { margin: 0 0 .6em; }
+    h1 { font-size: clamp(1.8rem, 6vw, 3rem); line-height: 1.05; }
     p, li, small { color: var(--muted); }
-    .brand, #inventory { color: var(--gold); font-weight: 800; }
-    .eyebrow { color: var(--mint); font-weight: 800; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; }
-    .panel, .note, .tile { border: 1px solid var(--line); border-radius: 17px; background: var(--panel); padding: clamp(13px, 4vw, 28px); }
-    .note, .tile { padding: 14px; background: #233943; }
-    .note { margin: 12px 0; }
-    .note ol { padding-left: 24px; margin-bottom: 0; }
-    .note li + li { margin-top: 5px; }
+    strong { color: var(--gold); }
+    .label { color: var(--mint); font-size: .8rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    .panel, .note, .tile {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: clamp(12px, 3vw, 24px);
+      background: #1a263c;
+    }
 
+    .note, .tile { padding: 13px; background: #253550; }
+    .note { margin: 12px 0; }
+    .note ol { margin: 0; padding-left: 23px; }
+    .note li + li { margin-top: 5px; }
+    .good { color: var(--mint); }
+    .bad { color: var(--danger); }
     button, input {
       min-height: 44px;
       padding: 8px 13px;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      background: #28434e;
+      border-radius: 9px;
+      background: #2d3e5f;
       color: var(--ink);
       font: inherit;
     }
 
     button { cursor: pointer; font-weight: 700; }
     button:hover:not(:disabled) { border-color: var(--mint); }
-    button:disabled { cursor: default; opacity: .55; }
-    button.primary { background: var(--mint); color: #102a21; border-color: transparent; }
+    button:disabled { opacity: .55; cursor: default; }
+    .primary { background: var(--mint); color: #102821; border-color: transparent; }
     :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 165px), 1fr)); gap: 9px; }
-    details { padding: 11px 0; border-top: 1px solid var(--line); }
-    summary { cursor: pointer; font-weight: 750; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 155px), 1fr)); gap: 8px; }
     .level { display: grid; text-align: left; }
-    .question { color: var(--ink); font-size: clamp(1.15rem, 3vw, 1.55rem); }
-    .good { color: var(--mint); }
-    .bad { color: var(--danger); }
-    progress { width: 100%; height: 12px; accent-color: var(--mint); }
-    form { margin: 12px 0; }
+    details { border-top: 1px solid var(--line); padding: 10px 0; }
+    summary { cursor: pointer; font-weight: 750; }
+    form { margin: 10px 0; }
     form label, form p { width: 100%; }
-    form input { flex: 1 1 110px; min-width: 0; }
-    #notice:empty, form p:empty { display: none; }
+    form input { flex: 1 1 105px; min-width: 0; }
+    progress { display: block; width: 100%; height: 11px; accent-color: var(--mint); }
+    .hud div:last-child progress { accent-color: var(--danger); }
+    #notice:empty, form p:empty, .feedback:empty { display: none; }
 
     .board {
       display: grid;
-      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+      grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
       overflow: hidden;
-      border: 3px solid #78948e;
-      border-radius: 15px;
-      box-shadow: 0 12px 26px #080f18a0;
-      background: #314c42;
+      border: 3px solid #839f97;
+      border-radius: 14px;
+      background: #384f46;
+      box-shadow: 0 8px 22px #0008;
     }
 
     .cell {
-      position: relative;
       display: grid;
       place-items: center;
       aspect-ratio: 1;
       min-width: 0;
-      font-size: clamp(10px, 4vw, 30px);
+      font-size: clamp(10px, 4vw, 28px);
       line-height: 1;
-      background: radial-gradient(ellipse at 24% 73%, #c7d68055 0 9%, transparent 10%), #52794d;
+      background: radial-gradient(ellipse at 25% 70%, #e1e69658 0 10%, transparent 11%), #527952;
     }
 
-    .cell:nth-child(odd) { background-color: #5d8555; }
-    .cell.wall { background: linear-gradient(145deg, #81908d, #3d5154 62%); box-shadow: inset 0 -4px #273b40; }
-    .cell.tree { background: radial-gradient(ellipse, #253e33, #40624b); }
-    .cell.water { background: repeating-linear-gradient(162deg, #285e7f 0 9px, #4388a3 10px 13px); }
-    .cell.path { background: radial-gradient(circle at 33% 33%, #f1d38955 0 7%, transparent 8%), #ae8a5e; }
-    .cell.gate { background: radial-gradient(circle, #ffe59a, #987442); box-shadow: inset 0 0 0 2px #ffe6ad89; }
-    .cell.near { z-index: 1; outline: 2px solid var(--gold); outline-offset: -2px; }
+    .cell:nth-child(odd) { background-color: #5b8456; }
+    .cell.wall { background: linear-gradient(145deg, #849394, #415358 65%); box-shadow: inset 0 -4px #293e46; }
+    .cell.tree { background: radial-gradient(ellipse, #243f35, #3d6650); }
+    .cell.water { background: repeating-linear-gradient(165deg, #226385 0 8px, #3d91ae 9px 12px); }
+    .cell.path { background: radial-gradient(circle at 30% 37%, #fbe1ac55 0 7%, transparent 8%), #af8d63; }
+    .cell.gate { background: radial-gradient(circle, #ffe698, #997445); box-shadow: inset 0 0 0 2px #ffe6ad96; }
+    .cell.near { outline: 2px solid var(--gold); outline-offset: -2px; }
     .cell.hero { outline: 2px solid var(--mint); outline-offset: -3px; }
-
     .pawn {
-      position: absolute;
       display: grid;
       place-items: center;
-      width: 84%;
-      height: 84%;
-      border: 2px solid #d4c2ff;
+      width: 87%;
+      height: 87%;
+      border: 2px solid #e1ccff;
       border-radius: 50%;
-      background: #47336a;
-      box-shadow: 0 0 12px #e1baff9c;
+      background: #543c78;
+      box-shadow: 0 0 11px #e2b2ff9c;
     }
 
     .arena {
-      max-width: 490px;
-      gap: 4px;
-      padding: 6px;
+      max-width: 480px;
       margin: 10px auto;
-      border-color: #84729f;
-      background: linear-gradient(145deg, #45355d, #1b233e);
+      padding: 5px;
+      gap: 4px;
+      border-color: #9b86bb;
+      background: linear-gradient(145deg, #573e6a, #1d2949);
     }
 
-    .arena .cell {
-      aspect-ratio: 1.24;
-      border: 1px solid #545b7f;
-      border-radius: 6px;
-      background: #2f3a58;
-    }
-
-    .arena .cell:nth-child(odd) { background: #384365; }
-    .arena .cell.enemy { background: radial-gradient(circle, #98627c, #3b2c4b); }
+    .arena .cell { aspect-ratio: 1.45; border: 1px solid #626987; border-radius: 6px; background: #303b5b; }
+    .arena .cell:nth-child(odd) { background: #384465; }
+    .arena .cell.enemy { background: radial-gradient(circle, #a16e92, #3b2b51); }
     .arena .cell.danger {
-      background: repeating-linear-gradient(135deg, #8d3b55 0 7px, #5c2b46 7px 14px);
-      border-color: #ffb1b9;
+      background: repeating-linear-gradient(135deg, #a43d59 0 7px, #702944 8px 14px);
+      border-color: #ffd1d3;
+      color: white;
     }
 
+    .arena .cell.strike { background: #ffba80; color: #331733; }
     .hud { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .hud div:last-child progress { accent-color: var(--danger); }
-    .controls { margin: 12px 0; }
+    .controls { margin: 9px 0; }
     .dpad { display: grid; grid-template-columns: repeat(3, 44px); gap: 4px; }
     .dpad button { padding: 0; }
     .dpad button:first-child { grid-column: 2; }
     .dpad button:nth-child(2) { grid-column: 1; }
-    .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); }
+    .question { color: var(--ink); font-size: clamp(1.1rem, 3vw, 1.45rem); }
+    .feedback { margin-top: 12px; }
   </style>
 </head>
 <body>
   <header>
-    <span class="brand">✦ Math Quest RPG</span>
+    <strong>✦ Math Quest RPG</strong>
     <nav aria-label="Game navigation">
-      <button type="button" id="villageButton">Village</button>
-      <button type="button" id="journalButton">Journal</button>
+      <button type="button" id="village">Village</button>
+      <button type="button" id="journal">Journal</button>
     </nav>
     <span id="inventory"></span>
   </header>
@@ -166,20 +161,20 @@
 
     const $ = id => document.getElementById(id);
     const app = $("app");
-    const storageKey = "moonridge-dodge-rpg-v1";
     const ranks = ["Apprentice", "Scout", "Knight", "Master"];
-    const testLength = 30;
+    const storageKey = "moonridge-dodge-rpg-v1";
+    const placementLength = 30;
     const heroMax = 3;
     const guardianMax = 4;
-    const arenaSize = { width: 7, height: 5 };
+    const arenaWidth = 7;
+    const arenaHeight = 5;
     const guardianTile = { x: 5, y: 2 };
+    const quietTime = 3000;
+    const warningTime = 1000;
+    const flashTime = 220;
 
     function problem(prompt, answer, ...steps) {
       return { prompt, answer, steps };
-    }
-
-    function unit(title, rule, make) {
-      return { title, rule, make };
     }
 
     function gcd(a, b) {
@@ -188,41 +183,37 @@
     }
 
     function factorial(n) {
-      let value = 1;
-      for (let i = 2; i <= n; i++) value *= i;
-      return value;
+      let result = 1;
+      for (let i = 2; i <= n; i++) result *= i;
+      return result;
     }
 
     function choose(n, k) {
-      return factorial(n) / (factorial(k) * factorial(n - k));
+      return Math.round(factorial(n) / (factorial(k) * factorial(n - k)));
     }
 
     const realms = [
       {
         name: "Number Forge", icon: "⚒️", guardian: "Ember Golem", sprite: "🗿",
         units: [
-          unit("Place Value and Subtraction", "Break the number being subtracted into chunks by place value.", (n, r) => {
-            const a = 57 + n + 100 * r;
-            const b = 18 + n % 9 + 46 * r;
+          ["Place Value and Subtraction", "Subtract place-value chunks separately.", (n, r) => {
+            const a = 57 + n + 100 * r, b = 18 + n % 9 + 46 * r;
             const chunk = b - b % 10;
             return problem(`Find ${a} − ${b}.`, a - b,
-              `Split ${b} into ${chunk} and ${b % 10}.`,
-              `Subtract the larger chunk first: ${a} − ${chunk} = ${a - chunk}.`,
-              `Subtract the remaining ones: ${a - chunk} − ${b % 10} = ${a - b}.`);
-          }),
-          unit("Distributive Multiplication", "Multiply each part of a split factor, then add the partial products.", (n, r) => {
-            const a = 13 + n + 12 * r;
-            const b = 3 + r + n % 5;
-            const tens = a - a % 10;
-            const ones = a % 10;
+              `Split ${b} into ${chunk} + ${b % 10}.`,
+              `Subtract ${chunk} first to get ${a - chunk}.`,
+              `Subtract the remaining ${b % 10} to get ${a - b}.`);
+          }],
+          ["Distributive Multiplication", "Split a factor into tens and ones, then multiply both parts.", (n, r) => {
+            const a = 13 + n + 12 * r, b = 3 + r + n % 5;
+            const tens = a - a % 10, ones = a % 10;
             return problem(`Find ${a} × ${b}.`, a * b,
               `Write ${a} as ${tens} + ${ones}.`,
-              `Multiply both parts by ${b}: ${tens * b} and ${ones * b}.`,
+              `Multiply the two parts by ${b}: ${tens * b} and ${ones * b}.`,
               `Add the partial products to get ${a * b}.`);
-          }),
-          unit("Greatest Common Factor", "Common factors divide both numbers evenly. The Euclidean algorithm replaces the larger number with its remainder.", (n, r) => {
-            let a = (n + 3) * (5 + r);
-            let b = (n + 3) * (3 + r);
+          }],
+          ["Greatest Common Factor", "When dividing two numbers, their common factors also divide the remainder.", (n, r) => {
+            let a = (n + 3) * (5 + r), b = (n + 3) * (3 + r);
             const prompt = `Find the greatest common factor of ${a} and ${b}.`;
             const steps = [];
             while (b) {
@@ -230,250 +221,211 @@
               [a, b] = [b, a % b];
             }
             return problem(prompt, a, ...steps, `The last nonzero divisor is ${a}.`);
-          }),
-          unit("Least Common Multiple", "For two positive integers, their GCF times their LCM equals their product.", (n, r) => {
-            const a = n + 6;
-            const b = n + 10 + 2 * r;
-            const d = gcd(a, b);
+          }],
+          ["Least Common Multiple", "For two positive integers, GCF × LCM equals their product.", (n, r) => {
+            const a = n + 6, b = n + 10 + 2 * r, d = gcd(a, b);
             return problem(`Find the least common multiple of ${a} and ${b}.`, a * b / d,
-              `The greatest common factor of ${a} and ${b} is ${d}.`,
-              `Divide their product by that factor: ${a} × ${b} ÷ ${d} = ${a * b / d}.`);
-          }),
-          unit("Fractions of a Whole", "The denominator tells you how many equal parts make the whole. The numerator tells you how many to take.", (n, r) => {
-            const top = 2 + r;
-            const bottom = 5 + r;
-            const part = n + 4;
-            return problem(`What is ${top}/${bottom} of ${part * bottom}?`, top * part,
-              `Find one equal part: ${part * bottom} ÷ ${bottom} = ${part}.`,
-              `Take ${top} parts: ${top} × ${part} = ${top * part}.`);
-          }),
-          unit("Adding Fractions", "A common denominator makes the pieces the same size, so their numerators can be added.", (n, r) => {
-            const b = 5 + r;
-            const a = 1 + n % (b - 1);
+              `Their greatest common factor is ${d}.`,
+              `Divide the product by their GCF: ${a} × ${b} ÷ ${d} = ${a * b / d}.`);
+          }],
+          ["Fractions of a Whole", "The denominator gives the number of equal parts in the whole.", (n, r) => {
+            const top = 2 + r, bottom = 5 + r, part = n + 4;
+            return problem(`What is ${top}/${bottom} of ${part * bottom}?`, part * top,
+              `Divide ${part * bottom} by ${bottom} to get one part, ${part}.`,
+              `Take ${top} parts: ${part} × ${top} = ${part * top}.`);
+          }],
+          ["Adding Fractions", "Use a common denominator so both fractions count pieces of the same size.", (n, r) => {
+            const b = 5 + r, a = 1 + n % (b - 1);
             return problem(`Write ${a}/${b} + 1/${2 * b} with denominator ${2 * b}. What is the numerator?`, 2 * a + 1,
-              `Multiply both parts of ${a}/${b} by 2 to get ${2 * a}/${2 * b}.`,
-              `Add the numerators: ${2 * a} + 1 = ${2 * a + 1}.`);
-          }),
-          unit("Unit Rates", "First find the amount per item. Then multiply by the number of items you need.", (n, r) => {
-            const count = 4 + r;
-            const cost = n + 2;
-            const wanted = 7 + 2 * r;
-            return problem(`${count} notebooks cost $${count * cost}. What do ${wanted} notebooks cost at the same rate, in dollars?`, wanted * cost,
+              `Multiply the first numerator and denominator by 2 to get ${2 * a}/${2 * b}.`,
+              `Keep the denominator and add the numerators: ${2 * a} + 1 = ${2 * a + 1}.`);
+          }],
+          ["Unit Rates", "Find the cost of one item before scaling up.", (n, r) => {
+            const count = 4 + r, cost = n + 2, wanted = 7 + 2 * r;
+            return problem(`${count} notebooks cost $${count * cost}. What do ${wanted} cost at the same rate, in dollars?`, wanted * cost,
               `One notebook costs ${count * cost} ÷ ${count} = $${cost}.`,
-              `${wanted} notebooks cost ${wanted} × ${cost} = $${wanted * cost}.`);
-          }),
-          unit("Percent of a Number", "Percent means per hundred. Multiply the whole by the percent divided by 100.", (n, r) => {
-            const percent = [15, 35, 65, 125][r];
-            const whole = 20 * (n + 3);
+              `Multiply ${wanted} × ${cost} to get $${wanted * cost}.`);
+          }],
+          ["Percent of a Number", "Percent means per hundred. Convert it to a fraction over 100.", (n, r) => {
+            const percent = [15, 35, 65, 125][r], whole = 20 * (n + 3);
             const answer = whole * percent / 100;
             return problem(`What is ${percent}% of ${whole}?`, answer,
-              `Convert ${percent}% to ${percent}/100.`,
-              `Compute ${whole} × ${percent}/100 = ${answer}.`);
-          }),
-          unit("Reverse Percent Changes", "The sale price is the original price times the fraction you paid. Divide by that fraction to undo the change.", (n, r) => {
-            const discount = [10, 25, 35, 45][r];
-            const original = 20 * (n + 5);
-            const paid = 100 - discount;
-            const sale = original * paid / 100;
-            return problem(`After a ${discount}% discount, an item costs $${sale}. Find the original price in dollars.`, original,
-              `You paid ${paid}% of the original price.`,
-              `Divide ${sale} by ${paid / 100} to recover $${original}.`);
-          }),
-          unit("Linear Equations", "Apply the same operation to both sides to keep an equation balanced.", (n, r) => {
-            const x = n - 9;
-            const a = 3 + r;
-            const b = 4 + r * 2;
+              `${percent}% is ${percent}/100.`,
+              `Multiply ${whole} × ${percent}/100 = ${answer}.`);
+          }],
+          ["Reverse Percent Changes", "The sale price equals the original price times the fraction you paid.", (n, r) => {
+            const discount = [10, 25, 35, 45][r], original = 20 * (n + 5);
+            const paid = 100 - discount, sale = original * paid / 100;
+            return problem(`After a ${discount}% discount, a price is $${sale}. Find the original price in dollars.`, original,
+              `Subtract the discount from 100%. You paid ${paid}% of the original.`,
+              `Divide ${sale} by ${paid / 100} to get ${original}.`);
+          }],
+          ["Linear Equations", "Keep an equation balanced by applying each operation to both sides.", (n, r) => {
+            const x = n - 9, a = 3 + r, b = 4 + 2 * r;
             return problem(`Solve for x: ${a}x + ${b} = ${a * x + b}.`, x,
-              `Subtract ${b} from both sides to get ${a}x = ${a * x}.`,
+              `Subtract ${b} from both sides: ${a}x = ${a * x}.`,
               `Divide both sides by ${a} to get x = ${x}.`,
-              `Check: ${a} × (${x}) + ${b} = ${a * x + b}.`);
-          })
+              `Check by substitution: ${a} × (${x}) + ${b} = ${a * x + b}.`);
+          }]
         ]
       },
       {
         name: "Counting Forest", icon: "🌲", guardian: "Moss Mimic", sprite: "🍄",
         units: [
-          unit("Multiplication Principle", "If every first choice can be paired with every second choice, multiply the counts.", (n, r) => {
-            const a = 3 + r + n % 8;
-            const b = 2 + n % 7;
+          ["Multiplication Principle", "Multiply the numbers of choices when each first choice can pair with every second choice.", (n, r) => {
+            const a = 3 + r + n % 8, b = 2 + n % 7;
             return problem(`Choose one of ${a} hats and one of ${b} capes. How many outfits can you make?`, a * b,
-              `Each hat has ${b} possible cape partners.`,
-              `There are ${a} hats, so there are ${a} × ${b} = ${a * b} outfits.`);
-          }),
-          unit("Codes With Repetition", "When repeats are allowed, each position has the same number of choices.", (n, r) => {
-            const symbols = 3 + n % 9;
-            const slots = 2 + r;
+              `Each of the ${a} hats has ${b} possible cape partners.`,
+              `Multiply ${a} × ${b} = ${a * b}.`);
+          }],
+          ["Codes With Repetition", "With repeats allowed, every position has the same number of choices.", (n, r) => {
+            const symbols = 3 + n % 9, slots = 2 + r;
             return problem(`A code has ${slots} positions, each with ${symbols} choices. Repeats are allowed. How many codes exist?`, symbols ** slots,
-              `Each of the ${slots} positions offers ${symbols} choices.`,
-              `Multiply those counts to get ${symbols}^${slots} = ${symbols ** slots}.`);
-          }),
-          unit("Codes Without Repetition", "Every symbol used removes one option from the next position.", (n, r) => {
-            const slots = 2 + r;
-            const symbols = slots + 2 + n % 9;
+              `Every position has ${symbols} options, even after you use a symbol.`,
+              `Multiply those counts: ${symbols}^${slots} = ${symbols ** slots}.`);
+          }],
+          ["Codes Without Repetition", "Each used symbol removes one choice from the next position.", (n, r) => {
+            const slots = 2 + r, symbols = slots + 2 + n % 9;
             const counts = Array.from({ length: slots }, (_, i) => symbols - i);
             const answer = counts.reduce((total, count) => total * count, 1);
-            return problem(`A ${slots}-position code uses an alphabet of ${symbols} symbols. No symbol repeats. How many codes exist?`, answer,
-              `There are ${symbols} choices first, then ${symbols - 1}, and so on.`,
-              `Multiply the choices: ${counts.join(" × ")} = ${answer}.`);
-          }),
-          unit("Distinct Roles", "Swapping people in different roles changes the result. Order matters.", (n, r) => {
+            return problem(`A ${slots}-position code uses ${symbols} distinct symbols. No symbol repeats. How many codes exist?`, answer,
+              `You start with ${symbols} choices. Each later position has one fewer.`,
+              `${counts.join(" × ")} = ${answer}.`);
+          }],
+          ["Distinct Roles", "Swapping people in different roles creates a different assignment.", (n, r) => {
             const students = n + 5 + r;
-            return problem(`Choose a captain and a deputy from ${students} students. The roles go to different people. How many assignments are possible?`, students * (students - 1),
+            return problem(`Choose a captain and deputy from ${students} students. The roles go to different people. How many assignments are possible?`, students * (students - 1),
               `Choose the captain in ${students} ways.`,
-              `Choose the deputy from the ${students - 1} remaining students.`,
-              `Multiply to get ${students * (students - 1)} assignments.`);
-          }),
-          unit("Unordered Teams", "Count ordered selections, then divide by the number of ways to rearrange each team.", (n, r) => {
-            const k = 2 + r;
-            const students = k + 4 + n % 10;
-            const answer = choose(students, k);
-            const factors = Array.from({ length: k }, (_, i) => students - i);
-            return problem(`How many ${k}-person teams can you choose from ${students} students?`, answer,
-              `Count ordered choices with ${factors.join(" × ")}.`,
-              `Every team occurs ${k}! = ${factorial(k)} times.`,
-              `Divide by ${factorial(k)} to get ${answer} teams.`);
-          }),
-          unit("Arrangements and Blocks", "Treat things that must stay together as one block. Also count the orders inside that block.", (n, r) => {
-            const books = 5 + r + n % 5;
-            const group = 2 + r % 2;
+              `There are ${students - 1} choices left for deputy.`,
+              `Multiply to get ${students * (students - 1)}.`);
+          }],
+          ["Unordered Teams", "Count ordered picks, then divide by how many orders represent the same team.", (n, r) => {
+            const k = 2 + r, students = k + 4 + n % 10;
+            const counts = Array.from({ length: k }, (_, i) => students - i);
+            return problem(`How many ${k}-person teams can you choose from ${students} students?`, choose(students, k),
+              `Count ordered selections with ${counts.join(" × ")}.`,
+              `Every team appears in ${k}! = ${factorial(k)} orders.`,
+              `Divide the ordered count by ${factorial(k)} to get ${choose(students, k)}.`);
+          }],
+          ["Arrangements and Blocks", "Treat objects that must stay together as one block.", (n, r) => {
+            const books = 5 + r + n % 5, group = 2 + r % 2;
             const objects = books - group + 1;
             const answer = factorial(objects) * factorial(group);
-            return problem(`Arrange ${books} different books in a row. A specified group of ${group} books must stay together. How many arrangements are possible?`, answer,
-              `Group the ${group} books into one object, leaving ${objects} objects to arrange.`,
-              `Arrange the objects in ${objects}! ways and the books inside the block in ${group}! ways.`,
+            return problem(`Arrange ${books} different books. A specified group of ${group} books must stay together. How many arrangements are possible?`, answer,
+              `Replace the group with one block. Now there are ${objects} objects to arrange.`,
+              `Arrange the objects in ${objects}! ways and the inside of the block in ${group}! ways.`,
               `Multiply to get ${answer}.`);
-          }),
-          unit("Counting the Complement", "For an “at least one” problem, subtract the outcomes with none from all possible outcomes.", (n, r) => {
-            const slots = 3 + r;
-            const symbols = 3 + n % 7;
-            const all = symbols ** slots;
-            const none = (symbols - 1) ** slots;
-            return problem(`A ${slots}-digit code uses digits 1 through ${symbols}, with repetition. How many codes contain at least one 1?`, all - none,
-              `All codes: ${symbols}^${slots} = ${all}.`,
-              `Codes without a 1: ${symbols - 1} choices per position, or ${none} codes.`,
+          }],
+          ["Counting the Complement", "For an “at least one” problem, count all outcomes and subtract the ones with none.", (n, r) => {
+            const slots = 3 + r, symbols = 3 + n % 7;
+            const all = symbols ** slots, none = (symbols - 1) ** slots;
+            return problem(`A ${slots}-digit code uses digits 1 through ${symbols}, with repetition allowed. How many codes contain at least one 1?`, all - none,
+              `There are ${symbols}^${slots} = ${all} total codes.`,
+              `Omitting 1 leaves ${symbols - 1} choices per slot, giving ${none} codes with none.`,
               `Subtract ${all} − ${none} = ${all - none}.`);
-          }),
-          unit("Exactly k Heads", "Choose the positions of the heads. The remaining positions must all be tails.", (n, r) => {
-            const flips = 5 + r + n % 8;
-            const heads = 1 + r;
+          }],
+          ["Exactly k Heads", "Choose where the heads go. The remaining positions are tails.", (n, r) => {
+            const flips = 5 + r + n % 8, heads = 1 + r;
             const answer = choose(flips, heads);
             return problem(`Flip a coin ${flips} times. How many ordered sequences have exactly ${heads} ${heads === 1 ? "head" : "heads"}?`, answer,
-              `Choose ${heads} positions from the ${flips} available.`,
-              `Each choice determines a full sequence because the other flips are tails.`,
+              `Choose ${heads} of the ${flips} positions for heads.`,
+              `Each choice gives one sequence because the other positions are tails.`,
               `The number of choices is ${flips}! ÷ (${heads}! × ${flips - heads}!) = ${answer}.`);
-          }),
-          unit("Probability With Dice", "For fair dice, probability is favorable ordered outcomes divided by all ordered outcomes.", (n, r) => {
-            const rolls = 2 + r + n % 5;
-            const all = 6 ** rolls;
-            const none = 5 ** rolls;
+          }],
+          ["Probability With Dice", "With a fair die, every ordered sequence of results is equally likely.", (n, r) => {
+            const rolls = 2 + r + n % 5, all = 6 ** rolls, none = 5 ** rolls;
             return problem(`Roll a fair die ${rolls} times. The probability of at least one six is k/${all}. Find k.`, all - none,
-              `There are 6^${rolls} = ${all} equally likely sequences.`,
-              `There are 5^${rolls} = ${none} sequences with no six.`,
-              `Subtract to get ${all - none} favorable sequences.`);
-          }),
-          unit("Pigeonhole Principle", "Find the largest number of items you can take without reaching the target. One more guarantees it.", (n, r) => {
-            const colors = 3 + n % 11;
-            const target = 2 + r;
-            const safe = colors * (target - 1);
-            return problem(`A bag has socks in ${colors} colors and at least ${target} of every color. How many draws guarantee ${target} socks of one color?`, safe + 1,
-              `You can draw ${target - 1} socks per color without forming the group.`,
+              `There are 6^${rolls} = ${all} equally likely ordered results.`,
+              `There are 5^${rolls} = ${none} results with no six.`,
+              `Subtract to get ${all - none} favorable results.`);
+          }],
+          ["Pigeonhole Principle", "Count how many draws can avoid the target. One additional draw forces it.", (n, r) => {
+            const colors = 3 + n % 11, target = 2 + r, safe = colors * (target - 1);
+            return problem(`A bag has socks in ${colors} colors and at least ${target} of each color. How many socks must you draw blindly, without replacement, to guarantee ${target} of one color?`, safe + 1,
+              `You could draw ${target - 1} socks of every color without meeting the target.`,
               `That accounts for ${colors} × ${target - 1} = ${safe} socks.`,
-              `One additional sock forces a color to reach ${target}, so you need ${safe + 1}.`);
-          })
+              `One more forces some color to reach ${target}. The answer is ${safe + 1}.`);
+          }]
         ]
       },
       {
         name: "Geometry Citadel", icon: "🏰", guardian: "Prism Drake", sprite: "🐉",
         units: [
-          unit("Rectangle Perimeter", "Perimeter is distance around a figure. A rectangle has two lengths and two widths.", (n, r) => {
-            const a = 8 + n + 3 * r;
-            const b = 3 + r + n % 5;
+          ["Rectangle Perimeter", "Perimeter is the distance around all four sides.", (n, r) => {
+            const a = 8 + n + 3 * r, b = 3 + r + n % 5;
             return problem(`Find the perimeter of a ${a} by ${b} rectangle.`, 2 * (a + b),
-              `One length plus one width is ${a} + ${b} = ${a + b}.`,
-              `Double that sum to include all four sides: ${2 * (a + b)} units.`);
-          }),
-          unit("Area and Missing Sides", "Rectangle area equals length times width. Divide by the known side to find the other.", (n, r) => {
-            const a = 7 + n;
-            const b = 3 + r + n % 4;
+              `Add one length and one width: ${a} + ${b} = ${a + b}.`,
+              `Double that sum to count all four sides: ${2 * (a + b)} units.`);
+          }],
+          ["Area and Missing Sides", "Rectangle area is length times width.", (n, r) => {
+            const a = 7 + n, b = 3 + r + n % 4;
             return problem(`A rectangle has area ${a * b} and width ${b}. Find its length.`, a,
               `Write ${a * b} = length × ${b}.`,
-              `Divide by ${b} to get length ${a}.`);
-          }),
-          unit("Triangle Area", "A triangle has half the area of a parallelogram with the same base and perpendicular height.", (n, r) => {
-            const base = n + 8;
-            const height = 2 * (3 + r + n % 4);
-            return problem(`A triangle has base ${base} and perpendicular height ${height}. Find its area.`, base * height / 2,
-              `Multiply the base by its perpendicular height: ${base} × ${height} = ${base * height}.`,
-              `Take half to get ${base * height / 2} square units.`);
-          }),
-          unit("Trapezoid Area", "Multiply the average of the two parallel side lengths by the perpendicular height.", (n, r) => {
-            const a = 4 + n;
-            const b = a + 3 + r;
-            const h = 4 + 2 * r;
-            const answer = (a + b) * h / 2;
-            return problem(`A trapezoid has parallel sides ${a} and ${b} and height ${h}. Find its area.`, answer,
+              `Divide by ${b} to get a length of ${a}.`);
+          }],
+          ["Triangle Area", "A triangle covers half the area of a parallelogram with the same base and perpendicular height.", (n, r) => {
+            const b = n + 8, h = 2 * (3 + r + n % 4);
+            return problem(`A triangle has base ${b} and perpendicular height ${h}. Find its area.`, b * h / 2,
+              `Multiply base by height: ${b} × ${h} = ${b * h}.`,
+              `Take half to get ${b * h / 2} square units.`);
+          }],
+          ["Trapezoid Area", "Multiply the average of the parallel sides by the perpendicular height.", (n, r) => {
+            const a = 4 + n, b = a + 3 + r, h = 4 + 2 * r;
+            return problem(`A trapezoid has parallel sides ${a} and ${b} and height ${h}. Find its area.`, (a + b) * h / 2,
               `Average the parallel sides: (${a} + ${b}) ÷ 2 = ${(a + b) / 2}.`,
-              `Multiply by the height ${h} to get ${answer} square units.`);
-          }),
-          unit("Polygon Angles", "Diagonals from one vertex split a convex polygon into two fewer triangles than its number of sides.", (n, r) => {
+              `Multiply by ${h} to get ${(a + b) * h / 2} square units.`);
+          }],
+          ["Polygon Angles", "Diagonals from one vertex of a convex polygon split it into triangles.", (n, r) => {
             const sides = 5 + r + n % 12;
             return problem(`Find the interior angle sum of a convex ${sides}-sided polygon, in degrees.`, (sides - 2) * 180,
-              `Draw diagonals from one vertex to form ${sides - 2} triangles.`,
-              `Each triangle contributes 180°, so the total is ${(sides - 2) * 180}°.`);
-          }),
-          unit("Pythagorean Theorem", "In a right triangle, the sum of the squared legs equals the squared hypotenuse.", (n, r) => {
+              `The diagonals form ${sides} − 2 = ${sides - 2} triangles.`,
+              `Each contributes 180°, so the total is ${(sides - 2) * 180}°.`);
+          }],
+          ["Pythagorean Theorem", "The squares of a right triangle’s legs add to the square of its hypotenuse.", (n, r) => {
             const scale = 2 + n % 13;
             const [a, b, c] = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25]][r]
               .map(side => side * scale);
             return problem(`A right triangle has hypotenuse ${c} and one leg ${a}. Find the other leg.`, b,
               `Write ${a}² + x² = ${c}².`,
               `Subtract ${a}² to get x² = ${c * c - a * a}.`,
-              `A length is positive, so x = ${b}.`);
-          }),
-          unit("Similar Figures", "A length scale factor changes both base and height. Area scales by the square of that factor.", (n, r) => {
-            const scale = 2 + r;
-            const area = 12 + n;
-            return problem(`A triangle of area ${area} is enlarged so each side becomes ${scale} times as long. Find its new area.`, area * scale ** 2,
-              `Base and height each grow by a factor of ${scale}.`,
-              `Area grows by ${scale}² = ${scale ** 2}.`,
+              `Take the positive square root because x is a length: x = ${b}.`);
+          }],
+          ["Similar Figures", "Multiplying every length by a scale factor multiplies area by the square of that factor.", (n, r) => {
+            const scale = 2 + r, area = 12 + n;
+            return problem(`A triangle of area ${area} is enlarged so each side is ${scale} times as long. Find its new area.`, area * scale ** 2,
+              `Both the base and the height grow by ${scale}.`,
+              `Area grows by ${scale} × ${scale} = ${scale ** 2}.`,
               `Multiply ${area} × ${scale ** 2} = ${area * scale ** 2}.`);
-          }),
-          unit("Coordinate Distance", "The horizontal and vertical differences are the two legs of a right triangle.", (n, r) => {
-            const x = n - 11;
-            const y = r - 5;
-            const scale = r + 1 + n % 4;
-            const a = 3 * scale;
-            const b = 4 * scale;
+          }],
+          ["Coordinate Distance", "Use horizontal and vertical changes as the legs of a right triangle.", (n, r) => {
+            const x = n - 11, y = r - 5, scale = r + 1 + n % 4;
+            const a = 3 * scale, b = 4 * scale;
             return problem(`Find the distance from (${x}, ${y}) to (${x + a}, ${y + b}).`, 5 * scale,
-              `The horizontal change is ${a} and the vertical change is ${b}.`,
+              `The horizontal difference is ${a} and the vertical difference is ${b}.`,
               `Use √(${a}² + ${b}²) = √${a * a + b * b} = ${5 * scale}.`);
-          }),
-          unit("Circle Equations", "In (x − h)² + (y − k)² = r², the center is (h, k) and the radius is r.", (n, r) => {
-            const h = n + 1;
-            const k = r + 2;
-            const radius = 3 + r + n % 9;
+          }],
+          ["Circle Equations", "Every point on (x − h)² + (y − k)² = r² is r units from the center (h, k).", (n, r) => {
+            const h = n + 1, k = r + 2, radius = 3 + r + n % 9;
             return problem(`The circle (x − ${h})² + (y + ${k})² = ${radius ** 2} encloses an area of aπ. Find a.`, radius ** 2,
-              `The point (${h}, −${k}) makes both parentheses zero, so it is the center.`,
-              `The right side gives the squared radius. The radius is ${radius}.`,
-              `Area = πr² = ${radius ** 2}π, so a = ${radius ** 2}.`);
-          }),
-          unit("The Sliding Ladder", "The ladder length is fixed. Its distance from the wall and its height are the legs of a right triangle.", (n, r) => {
-            const half = 3 + r + n % 11;
-            const length = 2 * half;
-            return problem(`A ${length}-ft ladder starts at 45°. Its base moves x feet toward the wall and its top moves y feet up. The full graph of their equation encloses aπ square feet. Find a.`, length ** 2,
-              `Both starting legs are ${length}/√2 = ${half}√2 feet.`,
-              `After moving, they become ${half}√2 − x and ${half}√2 + y.`,
-              `Squaring and adding gives (x − ${half}√2)² + (y + ${half}√2)² = ${length ** 2}.`,
-              `Every point on the full graph is ${length} feet from (${half}√2, −${half}√2), so the graph is a circle.`,
-              `The area is π × ${length}² = ${length ** 2}π. The actual sliding motion traces an arc.`);
-          })
+              `The center is (${h}, −${k}). Those coordinates make both parentheses zero.`,
+              `The right side is the squared radius, so the radius is ${radius}.`,
+              `Area = πr² = ${radius ** 2}π. The coefficient a is ${radius ** 2}.`);
+          }],
+          ["The Sliding Ladder", "The fixed ladder length links its changing height and distance from the wall.", (n, r) => {
+            const half = 3 + r + n % 11, length = 2 * half;
+            return problem(`A ${length}-ft ladder starts at 45°. Its base moves x feet toward the wall and its top rises y feet. The full graph of their equation encloses aπ square feet. Find a.`, length ** 2,
+              `At 45°, both starting legs are ${length}/√2 = ${half}√2 feet.`,
+              `After the move, they are ${half}√2 − x and ${half}√2 + y.`,
+              `Their squares add to ${length ** 2}, the fixed ladder length squared.`,
+              `The full graph is a circle with center (${half}√2, −${half}√2) and radius ${length}.`,
+              `Its area is ${length ** 2}π. The physical ladder positions trace only an arc.`);
+          }]
         ]
       }
     ];
 
     const levelsPerRealm = realms[0].units.length * ranks.length;
-
-    const village = [
+    const villageMap = [
       "###############",
       "#TTN...=..C..T#",
       "#T.=T..=..=...#",
@@ -486,11 +438,11 @@
     ];
 
     const gates = {
-      N: { name: realms[0].name, icon: realms[0].icon, visit: () => showRealm(0) },
-      F: { name: realms[1].name, icon: realms[1].icon, visit: () => showRealm(1) },
-      C: { name: realms[2].name, icon: realms[2].icon, visit: () => showRealm(2) },
-      S: { name: "Potion Shop", icon: "🧪", visit: showShop },
-      P: { name: "Placement Hall", icon: "🧭", visit: showPlacement }
+      N: [realms[0].name, realms[0].icon, () => showRealm(0)],
+      F: [realms[1].name, realms[1].icon, () => showRealm(1)],
+      C: [realms[2].name, realms[2].icon, () => showRealm(2)],
+      S: ["Potion Shop", "🧪", showShop],
+      P: ["Placement Hall", "🧭", showPlacement]
     };
 
     const terrain = {
@@ -502,16 +454,22 @@
     };
 
     const directions = [
-      { arrow: "↑", name: "up", dx: 0, dy: -1, keys: ["arrowup", "w"] },
-      { arrow: "←", name: "left", dx: -1, dy: 0, keys: ["arrowleft", "a"] },
-      { arrow: "↓", name: "down", dx: 0, dy: 1, keys: ["arrowdown", "s"] },
-      { arrow: "→", name: "right", dx: 1, dy: 0, keys: ["arrowright", "d"] }
+      ["↑", "up", 0, -1, "arrowup", "w"],
+      ["←", "left", -1, 0, "arrowleft", "a"],
+      ["↓", "down", 0, 1, "arrowdown", "s"],
+      ["→", "right", 1, 0, "arrowright", "d"]
     ];
 
     let state = load();
     let villageView = null;
     let arenaView = null;
     let battle = null;
+    let attackTimer = null;
+
+    function walkable(x, y) {
+      const tile = villageMap[y]?.[x];
+      return Boolean(tile && !["#", "T", "w"].includes(tile));
+    }
 
     function load() {
       const fresh = {
@@ -535,18 +493,17 @@
       return fresh;
     }
 
+    function inventory() {
+      $("inventory").textContent = `${state.xp} XP · ${state.gold} gold · ${state.potions} potions`;
+    }
+
     function save() {
       try {
         localStorage.setItem(storageKey, JSON.stringify(state));
       } catch {
         $("notice").textContent = "Browser storage is unavailable. Progress lasts for this visit.";
       }
-
-      updateInventory();
-    }
-
-    function updateInventory() {
-      $("inventory").textContent = `${state.xp} XP · ${state.gold} gold · ${state.potions} potions`;
+      inventory();
     }
 
     function el(tag, text, className) {
@@ -556,11 +513,11 @@
       return node;
     }
 
-    function button(label, action, primary = false) {
-      const node = el("button", label, primary ? "primary" : undefined);
-      node.type = "button";
-      node.addEventListener("click", action);
-      return node;
+    function button(text, action, primary = false) {
+      const control = el("button", text, primary ? "primary" : undefined);
+      control.type = "button";
+      control.addEventListener("click", action);
+      return control;
     }
 
     function row(...children) {
@@ -569,18 +526,32 @@
       return node;
     }
 
+    function stopAttacks() {
+      clearTimeout(attackTimer);
+      attackTimer = null;
+    }
+
     function screen(label, title) {
+      stopAttacks();
       villageView = null;
       arenaView = null;
 
       const panel = el("section", undefined, "panel");
       const heading = el("h1", title);
       heading.tabIndex = -1;
-      panel.append(el("p", label, "eyebrow"), heading);
+      panel.append(el("p", label, "label"), heading);
       app.replaceChildren(panel);
       heading.focus({ preventScroll: true });
       window.scrollTo(0, 0);
       return panel;
+    }
+
+    function explanation(title, q) {
+      const box = el("section", undefined, "note");
+      const steps = el("ol");
+      for (const step of q.steps) steps.append(el("li", step));
+      box.append(el("h3", title), el("p", q.prompt), steps);
+      return box;
     }
 
     function meter(value, max, label) {
@@ -591,59 +562,49 @@
       return bar;
     }
 
-    function explanation(title, q) {
-      const box = el("section", undefined, "note");
-      const steps = el("ol");
-      q.steps.forEach(step => steps.append(el("li", step)));
-      box.append(el("h3", title), el("p", q.prompt), steps);
-      return box;
-    }
-
-    function answerForm(action, label = "Submit answer") {
+    function answerForm(grade, label = "Submit answer") {
       const form = el("form", undefined, "row");
-      const title = el("label", "Your answer");
       const input = el("input");
+      const caption = el("label", "Your answer");
       const submit = el("button", label, "primary");
       const error = el("p", undefined, "bad");
-      title.htmlFor = "answer";
-      input.id = "answer";
+
+      input.id = "math-answer";
       input.type = "text";
       input.autocomplete = "off";
       input.required = true;
+      caption.htmlFor = input.id;
       submit.type = "submit";
       error.setAttribute("role", "status");
-      form.append(title, input, submit, error);
+      form.append(caption, input, submit, error);
 
       form.addEventListener("submit", event => {
         event.preventDefault();
         if (submit.disabled) return;
+        const raw = input.value.trim().replace(/^−/, "-");
+        const answer = Number(raw);
 
-        const value = input.value.trim().replace(/^−/, "-");
-        if (!/^[+-]?\d+$/.test(value) || !Number.isSafeInteger(Number(value))) {
+        if (!/^[+-]?\d+$/.test(raw) || !Number.isSafeInteger(answer)) {
           error.textContent = "Enter a whole number, such as 12 or -4.";
           return;
         }
 
-        error.textContent = "";
         input.disabled = true;
         submit.disabled = true;
-        action(Number(value));
+        error.textContent = "";
+        grade(answer);
       });
 
-      return form;
+      return { form, input };
     }
 
-    function sameTile(a, b) {
-      return a.x === b.x && a.y === b.y;
-    }
-
-    function pawn() {
-      return el("span", "🧙", "pawn");
+    function sameTile(first, second) {
+      return first.x === second.x && first.y === second.y;
     }
 
     function board(width, height, className = "") {
       const node = el("div", undefined, `board ${className}`);
-      node.style.setProperty("--cols", width);
+      node.style.setProperty("--columns", width);
       node.setAttribute("aria-hidden", "true");
 
       const cells = Array.from({ length: height }, () =>
@@ -657,105 +618,96 @@
       return { node, cells };
     }
 
-    function makeDpad(action, verb) {
+    function dpad(move, verb) {
       const pad = el("div", undefined, "dpad");
-      const buttons = directions.map(direction => {
-        const control = button(direction.arrow, () => action(direction.dx, direction.dy));
-        control.setAttribute("aria-label", `${verb} ${direction.name}`);
+      for (const [arrow, name, dx, dy] of directions) {
+        const control = button(arrow, () => move(dx, dy));
+        control.setAttribute("aria-label", `${verb} ${name}`);
         pad.append(control);
-        return control;
-      });
-      return { pad, buttons };
-    }
-
-    function walkable(x, y) {
-      const symbol = village[y]?.[x];
-      return Boolean(symbol && !["#", "T", "w"].includes(symbol));
+      }
+      return pad;
     }
 
     function nearbyGate() {
-      const position = state.position;
-      const nearby = [{ dx: 0, dy: 0 }, ...directions];
-
-      for (const { dx, dy } of nearby) {
-        const x = position.x + dx;
-        const y = position.y + dy;
-        const gate = gates[village[y]?.[x]];
-        if (gate) return { gate, x, y };
+      const { x, y } = state.position;
+      for (const [dx, dy] of [[0, 0], [0, -1], [-1, 0], [0, 1], [1, 0]]) {
+        const gate = gates[villageMap[y + dy]?.[x + dx]];
+        if (gate) return { gate, x: x + dx, y: y + dy };
       }
       return null;
-    }
-
-    function enterGate() {
-      const nearby = nearbyGate();
-      if (!villageView || !nearby) return;
-      save();
-      nearby.gate.visit();
     }
 
     function refreshVillage() {
       const view = villageView;
       const { x, y } = state.position;
-
-      view.heroCell?.classList.remove("hero");
-      view.heroCell = view.cells[y][x];
-      view.heroCell.classList.add("hero");
-      view.heroCell.append(view.player);
+      view.hero?.classList.remove("hero");
+      view.hero = view.cells[y][x];
+      view.hero.classList.add("hero");
+      view.hero.append(view.player);
 
       const nearby = nearbyGate();
       view.highlight?.classList.remove("near");
       view.highlight = nearby ? view.cells[nearby.y][nearby.x] : null;
       view.highlight?.classList.add("near");
       view.enter.disabled = !nearby;
-      view.enter.textContent = nearby ? `Enter ${nearby.gate.name}` : "Enter location";
-      const message = nearby ? `${nearby.gate.name} is within reach.` : "Follow a path to a golden gate.";
-      if (view.status.textContent !== message) view.status.textContent = message;
+      view.enter.textContent = nearby ? `Enter ${nearby.gate[0]}` : "Enter location";
+
+      const text = nearby ? `${nearby.gate[0]} is within reach.` : "Follow a path to a golden gate.";
+      if (view.status.textContent !== text) view.status.textContent = text;
     }
 
     function moveVillage(dx, dy) {
       if (!villageView) return;
-      const x = state.position.x + dx;
-      const y = state.position.y + dy;
+      const x = state.position.x + dx, y = state.position.y + dy;
       if (!walkable(x, y)) return;
       state.position = { x, y };
       refreshVillage();
     }
 
+    function enterGate() {
+      const nearby = nearbyGate();
+      if (!villageView || !nearby) return;
+      save();
+      nearby.gate[2]();
+    }
+
+    function resumeButton(panel) {
+      if (resumable()) panel.append(button("Resume guardian fight", showBattle));
+    }
+
     function showVillage() {
       const panel = screen("Overworld", "Moonridge Village");
-      panel.append(el("p", "Move with WASD, arrow keys, or the on-screen arrows. Press E near a gate to enter."));
+      panel.append(el("p", "Move with WASD, the arrow keys, or the buttons. Press E beside a gate to enter."));
+      const map = board(villageMap[0].length, villageMap.length);
 
-      const map = board(village[0].length, village.length);
-
-      village.forEach((line, y) => {
+      villageMap.forEach((line, y) => {
         [...line].forEach((symbol, x) => {
           const gate = gates[symbol];
-          const [style, icon] = gate ? ["gate", gate.icon] : terrain[symbol];
+          const [style, icon] = gate ? ["gate", gate[1]] : terrain[symbol];
           const cell = map.cells[y][x];
           cell.classList.add(style);
           cell.textContent = icon;
         });
       });
 
-      const dpad = makeDpad(moveVillage, "Move");
       const status = el("p");
       status.setAttribute("role", "status");
       const enter = button("Enter location", enterGate, true);
-      const controls = row(dpad.pad, status, enter);
-      controls.classList.add("controls");
       const legend = el("div", undefined, "legend");
 
-      Object.values(gates).forEach(gate => {
-        legend.append(el("span", `${gate.icon} ${gate.name}`));
-      });
+      for (const [name, icon] of Object.values(gates)) {
+        legend.append(el("span", `${icon} ${name}`));
+      }
 
+      const controls = row(dpad(moveVillage, "Move"), status, enter);
+      controls.classList.add("controls");
       panel.append(map.node, controls, legend);
-      if (resumable()) panel.append(button("Resume guardian fight", showBattle));
-      villageView = { cells: map.cells, player: pawn(), status, enter };
+      resumeButton(panel);
+      villageView = { cells: map.cells, player: el("span", "🧙", "pawn"), status, enter };
       refreshVillage();
     }
 
-    function unitAt(realm, level) {
+    function lessonAt(realm, level) {
       return realms[realm].units[Math.floor(level / ranks.length)];
     }
 
@@ -764,24 +716,24 @@
     }
 
     function newQuestion(realm, level, recent = []) {
-      const lesson = unitAt(realm, level);
+      const make = lessonAt(realm, level)[2];
       const start = Math.floor(Math.random() * 40);
-      let q;
+      let candidate;
 
       for (let offset = 0; offset < 40; offset++) {
-        q = lesson.make(3 + (start + offset) % 40, rankAt(level));
-        if (!recent.includes(q.prompt)) return q;
+        candidate = make(3 + (start + offset) % 40, rankAt(level));
+        if (!recent.includes(candidate.prompt)) return candidate;
       }
 
-      return q;
+      return candidate;
     }
 
     function complete() {
-      return state.diagnostic.length >= testLength;
+      return state.diagnostic.length >= placementLength;
     }
 
     function realmAnswers(realm) {
-      return state.diagnostic.filter(item => item.realm === realm);
+      return state.diagnostic.filter(entry => entry.realm === realm);
     }
 
     function adjust(level, correct) {
@@ -790,7 +742,7 @@
 
     function recommended(realm) {
       const estimates = realmAnswers(realm).slice(-4)
-        .map(item => adjust(item.level, item.correct))
+        .map(entry => adjust(entry.level, entry.correct))
         .sort((a, b) => a - b);
       return estimates[Math.floor((estimates.length - 1) / 2)] ?? 0;
     }
@@ -800,9 +752,8 @@
     }
 
     function unlocked(realm, level) {
-      return complete() && (
-        level <= recommended(realm) || cleared(realm, level - 1) || cleared(realm, level)
-      );
+      return complete() &&
+        (level <= recommended(realm) || cleared(realm, level - 1) || cleared(realm, level));
     }
 
     function showPlacement() {
@@ -814,15 +765,15 @@
       const index = state.diagnostic.length;
       const realm = index % realms.length;
       const history = realmAnswers(realm);
-      const level = history.reduce((estimate, item) => adjust(estimate, item.correct), 8);
+      const level = history.reduce((estimate, entry) => adjust(estimate, entry.correct), 8);
 
       if (!state.pending) {
-        state.pending = newQuestion(realm, level, history.map(item => item.q.prompt));
+        state.pending = newQuestion(realm, level, history.map(entry => entry.q.prompt));
         save();
       }
 
       const q = state.pending;
-      const panel = screen(`Placement · ${index + 1} of ${testLength}`, realms[realm].name);
+      const panel = screen(`Placement · ${index + 1} of ${placementLength}`, realms[realm].name);
 
       function submit(answer) {
         if (state.diagnostic.length !== index) return;
@@ -832,10 +783,11 @@
         showPlacement();
       }
 
+      const label = index === placementLength - 1 ? "See results" : "Next question";
       panel.append(
-        meter(index, testLength, "Placement progress"),
+        meter(index, placementLength, "Placement progress"),
         el("p", q.prompt, "question"),
-        answerForm(submit, index === testLength - 1 ? "See results" : "Next question"),
+        answerForm(submit, label).form,
         button("I’m not sure", () => submit(null))
       );
     }
@@ -846,12 +798,12 @@
 
       realms.forEach((region, realm) => {
         const level = recommended(realm);
+        const score = realmAnswers(realm).filter(entry => entry.correct).length;
         const tile = el("article", undefined, "tile");
-        const score = realmAnswers(realm).filter(item => item.correct).length;
         tile.append(
           el("h2", region.name),
           el("p", `${score}/10 correct · Start at Level ${level + 1}`),
-          el("p", unitAt(realm, level).title),
+          el("p", lessonAt(realm, level)[0]),
           button("Open lesson", () => showLesson(realm, level), true)
         );
         grid.append(tile);
@@ -863,16 +815,16 @@
     function showRealm(realm) {
       const region = realms[realm];
       const panel = screen("Curriculum", region.name);
-      panel.append(el("p", "Open a unit to read its explanation and worked example. All lessons can be previewed before placement."));
+      panel.append(el("p", "Open any unit to read its explanation and worked example before placement."));
 
-      region.units.forEach((lesson, index) => {
+      region.units.forEach(([title, rule, make], index) => {
         const first = index * ranks.length;
         const detail = el("details");
-        detail.open = complete() && unitAt(realm, recommended(realm)) === lesson;
+        detail.open = complete() && Math.floor(recommended(realm) / ranks.length) === index;
         detail.append(
-          el("summary", `${lesson.title} · Levels ${first + 1}–${first + ranks.length}`),
-          el("p", lesson.rule),
-          explanation("Worked example", lesson.make(0, 0))
+          el("summary", `${title} · Levels ${first + 1}–${first + ranks.length}`),
+          el("p", rule),
+          explanation("Worked example", make(0, 0))
         );
 
         const grid = el("div", undefined, "grid");
@@ -881,7 +833,7 @@
           const control = button(`Level ${level + 1} · ${rank}`, () => showLesson(realm, level));
           control.classList.add("level");
           const status = cleared(realm, level) ? "Cleared" :
-            complete() && recommended(realm) === level ? "Recommended start" :
+            complete() && level === recommended(realm) ? "Recommended start" :
             unlocked(realm, level) ? "Ready to play" : "Preview lesson";
           control.append(el("small", status));
           grid.append(control);
@@ -895,15 +847,13 @@
     }
 
     function showLesson(realm, level) {
-      const lesson = unitAt(realm, level);
-      const label = `${realms[realm].name} · Level ${level + 1} · ${ranks[rankAt(level)]}`;
-      const panel = screen(label, lesson.title);
-
-      panel.append(el("p", lesson.rule), explanation("Worked example", lesson.make(0, rankAt(level))));
+      const [title, rule, make] = lessonAt(realm, level);
+      const panel = screen(`${realms[realm].name} · Level ${level + 1} · ${ranks[rankAt(level)]}`, title);
+      panel.append(el("p", rule), explanation("Worked example", make(0, rankAt(level))));
 
       if (unlocked(realm, level)) {
         panel.append(
-          el("p", "Train with hints, or enter the arena. Dodge the marked tiles and land four correct spells to win."),
+          el("p", "Train with hints or enter the arena. Keep moving and land four correct spells to win."),
           row(
             button("Start training", () => showTraining(realm, level), true),
             button("Fight guardian", () => startBattle(realm, level))
@@ -921,156 +871,261 @@
     function rememberMistake(q, answer, source) {
       state.mistakes = [
         { q, answer, source },
-        ...state.mistakes.filter(item => item.q.prompt !== q.prompt)
+        ...state.mistakes.filter(entry => entry.q.prompt !== q.prompt)
       ].slice(0, 100);
     }
 
     function showTraining(realm, level, recent = []) {
-      const lesson = unitAt(realm, level);
+      const [title, rule] = lessonAt(realm, level);
       const q = newQuestion(realm, level, recent);
-      const panel = screen(`${realms[realm].name} · Training`, lesson.title);
-      const result = el("div");
-      result.tabIndex = -1;
-
+      const panel = screen(`${realms[realm].name} · Training`, title);
       const hint = el("details", undefined, "note");
-      hint.append(el("summary", "Reveal a hint"), el("p", lesson.rule));
+      hint.append(el("summary", "Reveal a hint"), el("p", rule));
+
       let usedHint = false;
-      hint.addEventListener("toggle", () => {
-        if (hint.open) usedHint = true;
+      hint.addEventListener("toggle", () => { if (hint.open) usedHint = true; });
+      const feedback = el("div", undefined, "feedback");
+
+      const answer = answerForm(value => {
+        const correct = value === q.answer;
+        if (correct) state.xp += usedHint || hint.open ? 1 : 3;
+        else rememberMistake(q, value, "Training");
+        save();
+
+        feedback.append(
+          explanation(correct ? "Correct!" : `Correct answer: ${q.answer}`, q),
+          button("Next problem", () => showTraining(realm, level, [...recent, q.prompt].slice(-10)), true)
+        );
       });
 
       panel.append(
-        el("p", q.prompt, "question"),
-        answerForm(answer => {
-          const correct = answer === q.answer;
-          if (correct) state.xp += usedHint || hint.open ? 1 : 3;
-          else rememberMistake(q, answer, "Training");
-          save();
-
-          result.append(
-            explanation(correct ? "Correct!" : `Correct answer: ${q.answer}`, q),
-            button("Next problem", () => {
-              showTraining(realm, level, [...recent, q.prompt].slice(-10));
-            }, true)
-          );
-          result.focus();
-        }),
-        hint,
-        result,
+        el("p", q.prompt, "question"), answer.form, hint, feedback,
         button("Fight guardian", () => startBattle(realm, level))
       );
     }
 
+    /* Real-time guardian battles */
+
     function resumable() {
-      return battle && battle.hp > 0 && battle.enemyHP > 0;
-    }
-
-    function insideArena(tile) {
-      return tile.x >= 0 && tile.x < arenaSize.width &&
-        tile.y >= 0 && tile.y < arenaSize.height;
-    }
-
-    function prepareTurn(current) {
-      const horizontal = current.turn % 2 === 0;
-      const offsets = horizontal
-        ? [{ x: -1, y: 0 }, { x: 0, y: 0 }, { x: 1, y: 0 }]
-        : [{ x: 0, y: -1 }, { x: 0, y: 0 }, { x: 0, y: 1 }];
-
-      current.danger = offsets
-        .map(offset => ({ x: current.player.x + offset.x, y: current.player.y + offset.y }))
-        .filter(tile => insideArena(tile) && !sameTile(tile, guardianTile));
-
-      current.moved = false;
-      current.feedback = null;
+      return Boolean(battle && battle.hp > 0 && battle.enemyHP > 0);
     }
 
     function startBattle(realm, level) {
       if (!unlocked(realm, level)) return;
-
       battle = {
         realm, level, hp: heroMax, enemyHP: guardianMax,
-        player: { x: 1, y: 2 }, turn: 0,
-        recent: [], q: newQuestion(realm, level)
+        player: { x: 1, y: 2 },
+        q: newQuestion(realm, level), recent: [],
+        marked: [], flashing: false, lastSpell: null
       };
-
-      prepareTurn(battle);
       showBattle();
     }
 
-    function dangerous(current, tile) {
-      return current.danger.some(mark => sameTile(mark, tile));
+    function randomAttackTiles() {
+      const options = [];
+      for (let y = 0; y < arenaHeight; y++) {
+        for (let x = 0; x < arenaWidth; x++) {
+          const tile = { x, y };
+          if (!sameTile(tile, guardianTile)) options.push(tile);
+        }
+      }
+
+      const chosen = [];
+      for (let i = 0; i < 3; i++) {
+        const index = Math.floor(Math.random() * options.length);
+        chosen.push(options.splice(index, 1)[0]);
+      }
+      return chosen;
     }
 
-    function moveArena(dx, dy) {
-      const current = battle;
-      if (!arenaView || !resumable() || current.moved || current.feedback) return;
+    function marked(current, tile) {
+      return current.marked.some(target => sameTile(target, tile));
+    }
 
-      const next = { x: current.player.x + dx, y: current.player.y + dy };
-      if (!insideArena(next) || sameTile(next, guardianTile)) {
-        arenaView.status.textContent = "That tile is blocked. Try a different direction.";
+    function activeFight(current) {
+      return current === battle && resumable() && arenaView?.current === current && !document.hidden;
+    }
+
+    function scheduleAttack(current, delay, action) {
+      stopAttacks();
+      if (!activeFight(current)) return;
+      attackTimer = setTimeout(() => {
+        attackTimer = null;
+        if (activeFight(current)) action();
+      }, delay);
+    }
+
+    function beginAttackCycle(current) {
+      current.marked = [];
+      current.flashing = false;
+      paintArena(current);
+
+      scheduleAttack(current, quietTime, () => {
+        current.marked = randomAttackTiles();
+        paintArena(current);
+        arenaView.status.textContent = "Three squares are marked. Move out before they strike!";
+        scheduleAttack(current, warningTime, () => strike(current));
+      });
+    }
+
+    function strike(current) {
+      const hit = marked(current, current.player);
+      if (hit) current.hp--;
+      current.flashing = true;
+
+      if (current.hp === 0) {
+        showBattleResult(current, false);
         return;
       }
 
-      current.player = next;
-      current.moved = true;
-      refreshArena();
-      arenaView.focusAfterMove?.focus({ preventScroll: true });
+      paintArena(current);
+      arenaView.status.textContent = hit
+        ? `The attack hit you. ${current.hp} hearts left.`
+        : "You avoided the attack!";
+
+      scheduleAttack(current, flashTime, () => {
+        current.marked = [];
+        current.flashing = false;
+        paintArena(current);
+        scheduleAttack(current, quietTime - flashTime, () => warnAgain(current));
+      });
     }
 
-    function refreshArena() {
-      const current = battle;
-      const view = arenaView;
-      const enemy = realms[current.realm];
+    function warnAgain(current) {
+      current.marked = randomAttackTiles();
+      paintArena(current);
+      arenaView.status.textContent = "Three squares are marked. Move out before they strike!";
+      scheduleAttack(current, warningTime, () => strike(current));
+    }
 
+    function moveArena(dx, dy) {
+      if (!activeFight(battle)) return;
+
+      const current = battle;
+      const next = { x: current.player.x + dx, y: current.player.y + dy };
+      if (next.x < 0 || next.x >= arenaWidth || next.y < 0 || next.y >= arenaHeight ||
+          sameTile(next, guardianTile)) return;
+
+      current.player = next;
+      paintArena(current);
+    }
+
+    function paintArena(current) {
+      const view = arenaView;
+      if (view?.current !== current) return;
+
+      const region = realms[current.realm];
       view.cells.forEach((line, y) => {
         line.forEach((cell, x) => {
           const tile = { x, y };
           const hero = sameTile(tile, current.player);
-          const guardian = current.enemyHP > 0 && sameTile(tile, guardianTile);
-          const threatened = current.enemyHP > 0 && dangerous(current, tile);
-
+          const enemy = sameTile(tile, guardianTile);
+          const danger = marked(current, tile);
           cell.classList.toggle("hero", hero);
-          cell.classList.toggle("enemy", guardian);
-          cell.classList.toggle("danger", threatened);
+          cell.classList.toggle("enemy", enemy);
+          cell.classList.toggle("danger", danger);
+          cell.classList.toggle("strike", danger && current.flashing);
           cell.replaceChildren();
-
-          if (hero) cell.append(pawn());
-          else if (guardian) cell.textContent = enemy.sprite;
-          else if (threatened) cell.textContent = "!";
+          if (hero) cell.append(view.player);
+          else if (enemy) cell.textContent = region.sprite;
+          else if (danger) cell.textContent = current.flashing ? "✹" : "!";
         });
       });
 
-      view.buttons.forEach(control => {
-        control.disabled = current.moved || Boolean(current.feedback);
-      });
+      view.heroLabel.textContent = `You · ${current.hp}/${heroMax} HP`;
+      view.enemyLabel.textContent = `${region.guardian} · ${current.enemyHP}/${guardianMax} HP`;
+      view.heroBar.value = current.hp;
+      view.enemyBar.value = current.enemyHP;
+      view.heal.disabled = state.potions < 1 || current.hp >= heroMax;
+      view.heal.textContent = `Heal 1 HP · ${state.potions} potions`;
 
-      if (current.feedback) {
-        view.status.textContent = current.feedback.message;
+      const safe = marked(current, current.player) ? "Marked tile" : "Safe tile";
+      const position = `Row ${current.player.y + 1}, column ${current.player.x + 1} · ${safe}`;
+      if (view.position.textContent !== position) view.position.textContent = position;
+    }
+
+    function renderBattleQuestion(current, focusAnswer = false) {
+      const view = arenaView;
+      const q = current.q;
+      const answer = answerForm(value => castSpell(current, q, value), "Cast spell");
+      view.question.replaceChildren(el("p", q.prompt, "question"), answer.form);
+      if (focusAnswer) answer.input.focus({ preventScroll: true });
+    }
+
+    function castSpell(current, q, answer) {
+      if (!activeFight(current) || current.q !== q) return;
+      const correct = answer === q.answer;
+      if (correct) current.enemyHP--;
+      else rememberMistake(q, answer, "Guardian battle");
+
+      current.lastSpell = { q, correct };
+      if (current.enemyHP === 0) {
+        showBattleResult(current, true);
         return;
       }
 
-      const where = `Row ${current.player.y + 1}, column ${current.player.x + 1}.`;
-      if (current.moved) {
-        const safety = dangerous(current, current.player) ? "This tile is marked." : "You’re on a safe tile.";
-        view.status.textContent = `${where} ${safety} Solve the problem to cast.`;
-      } else {
-        const horizontal = current.turn % 2 === 0;
-        const advice = horizontal ? "Horizontal sweep. Dodge up or down." : "Vertical beam. Dodge left or right.";
-        view.status.textContent = `${where} ${advice} You can move one tile before casting.`;
-      }
+      save();
+      const result = explanation(correct ? "Your spell hits!" : `Spell missed. Correct answer: ${q.answer}`, q);
+      arenaView.feedback.replaceChildren(result);
+      paintArena(current);
+
+      current.recent = [...current.recent, q.prompt].slice(-10);
+      current.q = newQuestion(current.realm, current.level, current.recent);
+      renderBattleQuestion(current, true);
     }
 
-    function resolveTurn(current, answer) {
-      if (current !== battle || current.feedback || !resumable()) return;
+    function showBattle() {
+      if (!resumable()) return;
+      const current = battle;
+      const region = realms[current.realm];
+      const panel = screen(`${region.name} · Level ${current.level + 1}`, `${region.guardian} battle`);
 
-      const right = answer === current.q.answer;
-      if (right) current.enemyHP -= 1;
-      else rememberMistake(current.q, answer, "Guardian battle");
+      const heroLabel = el("strong");
+      const enemyLabel = el("strong");
+      const heroBar = meter(current.hp, heroMax, "Your health");
+      const enemyBar = meter(current.enemyHP, guardianMax, "Guardian health");
+      const hero = el("div");
+      const enemy = el("div");
+      hero.append(heroLabel, heroBar);
+      enemy.append(enemyLabel, enemyBar);
 
-      const won = current.enemyHP === 0;
-      const hit = !won && dangerous(current, current.player);
-      if (hit) current.hp -= 1;
+      const hud = el("div", undefined, "hud");
+      hud.append(hero, enemy);
+      const map = board(arenaWidth, arenaHeight, "arena");
 
+      const status = el("p", "Move freely. Red squares warn you where the attack will land.");
+      status.setAttribute("role", "status");
+      const position = el("p");
+      const question = el("div");
+      const feedback = el("div", undefined, "feedback");
+      feedback.setAttribute("aria-live", "polite");
+
+      const heal = button("", () => {
+        if (!activeFight(current) || state.potions < 1 || current.hp >= heroMax) return;
+        state.potions--;
+        current.hp++;
+        save();
+        paintArena(current);
+      });
+
+      const controls = row(dpad(moveArena, "Move"), heal);
+      controls.classList.add("controls");
+      panel.append(hud, map.node, status, position, controls, question, feedback);
+      arenaView = {
+        current, cells: map.cells, player: el("span", "🧙", "pawn"),
+        heroLabel, enemyLabel, heroBar, enemyBar, heal, status, position, question, feedback
+      };
+
+      if (current.lastSpell) {
+        const { q, correct } = current.lastSpell;
+        feedback.append(explanation(correct ? "Last spell hit" : `Last answer: ${q.answer}`, q));
+      }
+
+      renderBattleQuestion(current);
+      beginAttackCycle(current);
+    }
+
+    function showBattleResult(current, won) {
       let reward = "";
       if (won) {
         if (cleared(current.realm, current.level)) {
@@ -1083,104 +1138,30 @@
         }
       }
 
-      const cast = right ? "Your spell hits!" : "Your spell fizzles.";
-      const outcome = won ? "The guardian falls before it can attack." :
-        hit ? "The attack lands. You lose one heart." : "You dodge the guardian’s attack!";
-      current.feedback = { right, reward, message: `${cast} ${outcome}` };
       save();
-      showBattle();
-    }
-
-    function fighter(name, hp, max) {
-      const node = el("div");
-      node.append(el("strong", `${name} · ${hp}/${max} HP`), meter(hp, max, `${name} health`));
-      return node;
-    }
-
-    function showBattle() {
-      if (!battle) return;
-      const current = battle;
-      const region = realms[current.realm];
-      const panel = screen(`${region.name} · Level ${current.level + 1}`, `${region.guardian} battle`);
-      const hud = el("div", undefined, "hud");
-      hud.append(
-        fighter("You", current.hp, heroMax),
-        fighter(region.guardian, current.enemyHP, guardianMax)
-      );
-
-      const map = board(arenaSize.width, arenaSize.height, "arena");
-      const status = el("p");
-      status.setAttribute("role", "status");
-      panel.append(hud, map.node, status);
-      arenaView = { cells: map.cells, status, buttons: [] };
-
-      if (current.feedback) {
-        refreshArena();
-        panel.append(explanation(
-          current.feedback.right ? "How to solve it" : `Correct answer: ${current.q.answer}`,
-          current.q
-        ));
-
-        if (current.enemyHP === 0) {
-          panel.append(el("h2", "Guardian defeated!"), el("p", current.feedback.reward, "good"));
-
-          if (current.level + 1 < levelsPerRealm) {
-            panel.append(button("Open next level",
-              () => showLesson(current.realm, current.level + 1), true));
-          } else {
-            panel.append(el("p", `You cleared the final level of ${region.name}.`));
-          }
-
-          panel.append(button("Back to village", showVillage));
-          return;
+      const panel = screen("Battle results", won ? "Guardian defeated!" : "Return to camp");
+      if (won) {
+        panel.append(el("p", reward, "good"), explanation("Winning spell", current.lastSpell.q));
+        if (current.level + 1 < levelsPerRealm) {
+          panel.append(button("Open next level", () => showLesson(current.realm, current.level + 1), true));
+        } else {
+          panel.append(el("p", `You cleared the final level of ${realms[current.realm].name}.`));
         }
-
-        if (current.hp === 0) {
-          panel.append(
-            el("h2", "Return to camp"),
-            row(
-              button("Review the lesson", () => showLesson(current.realm, current.level)),
-              button("Try again", () => startBattle(current.realm, current.level), true)
-            )
-          );
-          return;
-        }
-
-        panel.append(button("Next turn", () => {
-          current.recent = [...current.recent, current.q.prompt].slice(-10);
-          current.q = newQuestion(current.realm, current.level, current.recent);
-          current.turn++;
-          prepareTurn(current);
-          showBattle();
-        }, true));
-        return;
+      } else {
+        panel.append(
+          el("p", "You ran out of hearts. Move off the marked tiles before they strike."),
+          row(
+            button("Try again", () => startBattle(current.realm, current.level), true),
+            button("Review lesson", () => showLesson(current.realm, current.level))
+          )
+        );
       }
 
-      const dpad = makeDpad(moveArena, "Dodge");
-      arenaView.buttons = dpad.buttons;
-      const form = answerForm(answer => resolveTurn(current, answer), "Cast spell");
-      arenaView.focusAfterMove = form.querySelector("input");
-
-      const heal = button(`Heal 1 HP · ${state.potions} potions`, () => {
-        if (battle !== current || current.feedback || state.potions < 1 || current.hp >= heroMax) return;
-        state.potions--;
-        current.hp++;
-        save();
-        hud.firstElementChild.replaceWith(fighter("You", current.hp, heroMax));
-        heal.textContent = `Heal 1 HP · ${state.potions} potions`;
-        heal.disabled = state.potions < 1 || current.hp >= heroMax;
-      });
-      heal.disabled = state.potions < 1 || current.hp >= heroMax;
-
-      const controls = row(dpad.pad, heal);
-      controls.classList.add("controls");
-      panel.append(controls, el("p", current.q.prompt, "question"), form);
-      refreshArena();
+      panel.append(button("Back to village", showVillage));
     }
 
     function showShop() {
       const panel = screen("Moonridge Village", "Potion Shop");
-
       const buy = button("Buy a healing potion · 5 gold", () => {
         if (state.gold < 5) return;
         state.gold -= 5;
@@ -1188,28 +1169,27 @@
         save();
         showShop();
       }, true);
-
       buy.disabled = state.gold < 5;
+
       panel.append(
-        el("p", "A potion restores one heart during a fight. Defeat a guardian for the first time to earn gold."),
+        el("p", "A potion restores one heart. First-time victories earn gold."),
         row(buy, button("Back to village", showVillage))
       );
-
-      if (resumable()) panel.append(button("Return to battle", showBattle));
+      resumeButton(panel);
     }
 
     function showJournal() {
       const panel = screen("Review", "Quest Journal");
       const diagnosticMisses = complete()
-        ? state.diagnostic.filter(item => !item.correct).map(item => ({ ...item, source: "Placement" }))
+        ? state.diagnostic.filter(entry => !entry.correct).map(entry => ({ ...entry, source: "Placement" }))
         : [];
       const entries = [...state.mistakes, ...diagnosticMisses];
 
       if (!entries.length) {
-        panel.append(el("p", "Missed problems appear here with their worked solutions. Placement solutions unlock after the test."));
+        panel.append(el("p", "Missed problems and their solutions appear here. Placement solutions unlock after the test."));
       }
 
-      entries.forEach(({ q, answer, source }) => {
+      for (const { q, answer, source } of entries) {
         const detail = el("details");
         detail.append(
           el("summary", `${source} · ${q.prompt}`),
@@ -1217,34 +1197,47 @@
           explanation("Step-by-step solution", q)
         );
         panel.append(detail);
-      });
-
-      if (resumable()) panel.append(button("Return to battle", showBattle));
+      }
+      resumeButton(panel);
     }
 
     document.addEventListener("keydown", event => {
-      if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
-
-      if (event.target instanceof Element &&
-          event.target.closest("input, textarea, select, [contenteditable]")) return;
-
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
       const key = event.key.toLowerCase();
-      const direction = directions.find(item => item.keys.includes(key));
+      const direction = directions.find(item => item[4] === key || item[5] === key);
 
-      if (direction && (villageView || arenaView && !battle.feedback)) {
+      // The battle input only accepts whole numbers. Movement keys can also
+      // control the wizard while that input has focus.
+      if (direction && (villageView || arenaView)) {
         event.preventDefault();
-        if (villageView) moveVillage(direction.dx, direction.dy);
-        else if (!event.repeat) moveArena(direction.dx, direction.dy);
+        const dx = direction[2], dy = direction[3];
+        if (villageView) moveVillage(dx, dy);
+        else moveArena(dx, dy);
       } else if (villageView && key === "e" && !event.repeat) {
         event.preventDefault();
         enterGate();
       }
     });
 
-    $("villageButton").addEventListener("click", showVillage);
-    $("journalButton").addEventListener("click", showJournal);
-    window.addEventListener("pagehide", save);
-    updateInventory();
+    document.addEventListener("visibilitychange", () => {
+      stopAttacks();
+      if (document.hidden || !arenaView || !resumable()) return;
+      arenaView.status.textContent = "Battle resumed. Watch for red squares.";
+      beginAttackCycle(battle);
+    });
+
+    window.addEventListener("pagehide", () => {
+      stopAttacks();
+      save();
+    });
+
+    window.addEventListener("pageshow", event => {
+      if (event.persisted && arenaView && resumable()) beginAttackCycle(battle);
+    });
+
+    $("village").addEventListener("click", showVillage);
+    $("journal").addEventListener("click", showJournal);
+    inventory();
     showVillage();
   </script>
 </body>
